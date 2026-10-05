@@ -56,6 +56,7 @@ PHRASES: list[tuple[str, str]] = [
     ("DONE HUSTLING", "END_FUNC"),
     ("GRIND WHILE", "WHILE"),
     ("DIVIDED BY", "DIV"),
+    ("SPLIT BY", "IDIV"),
     ("CASH OUT", "RETURN"),
     ("BUGATTI", "LET"),
     ("EQUALS", "ASSIGN"),
@@ -315,10 +316,12 @@ class Parser:
             raise BetaError(f"unexpected {tok.kind} after the program", tok.line)
         return Program(body)
 
-    def parse_block(self, stop: set[str]) -> list:
+    def parse_block(self, stop: set[str], opener: str = "block", line: int | None = None) -> list:
         stmts = []
         while not self.check(*stop, "EOF"):
             stmts.append(self.parse_statement())
+        if "EOF" not in stop and self.check("EOF"):
+            raise BetaError(f"{opener} was never closed. A king finishes the block", line)
         return stmts
 
     def parse_statement(self):
@@ -337,17 +340,17 @@ class Parser:
             self.advance()
             cond = self.parse_expression()
             self.expect("THEN", "THEN")
-            then_body = self.parse_block({"ELSE", "END_IF"})
+            then_body = self.parse_block({"ELSE", "END_IF"}, "IF", tok.line)
             else_body: list = []
             if self.check("ELSE"):
                 self.advance()
-                else_body = self.parse_block({"END_IF"})
+                else_body = self.parse_block({"END_IF"}, "IF", tok.line)
             self.expect("END_IF", "PERIOD")
             return If(cond, then_body, else_body, tok.line)
         if self.check("WHILE"):
             self.advance()
             cond = self.parse_expression()
-            body = self.parse_block({"END_WHILE"})
+            body = self.parse_block({"END_WHILE"}, "GRIND WHILE", tok.line)
             self.expect("END_WHILE", "STOP GRINDING")
             return While(cond, body, tok.line)
         if self.check("FUNC"):
@@ -357,14 +360,14 @@ class Parser:
             if self.check("WITH"):
                 self.advance()
                 params.append(self.expect("IDENT", "a parameter name").value)
-                while self.check("AND"):
-                    # AND introduces another parameter only when an IDENT follows.
-                    # Expression-level AND is not valid here.
+                while self.check("AND", "COMMA"):
                     if self.tokens[self.pos + 1].kind != "IDENT":
                         break
                     self.advance()
                     params.append(self.expect("IDENT", "a parameter name").value)
-            body = self.parse_block({"END_FUNC"})
+            if len(params) != len(set(params)):
+                raise BetaError(f"hustle '{name}' repeats a parameter. Names are not rented twice", tok.line)
+            body = self.parse_block({"END_FUNC"}, "HUSTLE", tok.line)
             self.expect("END_FUNC", "DONE HUSTLING")
             return Func(name, params, body, tok.line)
         if self.check("RETURN"):
@@ -422,7 +425,7 @@ class Parser:
 
     def parse_mul(self):
         expr = self.parse_unary()
-        while self.check("TIMES", "DIV", "MOD"):
+        while self.check("TIMES", "DIV", "IDIV", "MOD"):
             op = self.advance()
             right = self.parse_unary()
             expr = Binary(op.kind, expr, right, op.line)
@@ -460,7 +463,10 @@ class Parser:
         if self.check("CALL"):
             self.advance()
             name = self.expect("IDENT", "a hustle name").value
-            args = self._parse_call_args(tok.line)
+            if self.check("LPAREN"):
+                args = self._parse_paren_args()
+            else:
+                args = self._parse_call_args(tok.line)
             return Call(name, args, tok.line)
         if self.check("IDENT"):
             self.advance()
@@ -471,14 +477,25 @@ class Parser:
         )
 
     def _parse_call_args(self, line: int) -> list:
-        # AND separates arguments. A parenthesized expression may still contain AND.
+        # AND or a comma separates arguments. Prefer CALL name (arg, arg) when an operator follows the call.
         args: list = []
         if self.check("WITH"):
             self.advance()
             args.append(self.parse_cmp())
-            while self.check("AND"):
+            while self.check("AND", "COMMA"):
                 self.advance()
                 args.append(self.parse_cmp())
+        return args
+
+    def _parse_paren_args(self) -> list:
+        self.expect("LPAREN", "(")
+        args: list = []
+        if not self.check("RPAREN"):
+            args.append(self.parse_expression())
+            while self.check("COMMA", "AND"):
+                self.advance()
+                args.append(self.parse_expression())
+        self.expect("RPAREN", ")")
         return args
 
 
@@ -534,11 +551,24 @@ def as_number(value: Any, line: int) -> int | float:
     raise BetaError(f"expected a number, got {value!r}. Numbers only, king", line)
 
 
+def tidy(value: int | float) -> int | float:
+    """Keep an exact whole result as an int so later MODULO and recursion stay exact."""
+    if isinstance(value, float) and value.is_integer() and abs(value) < 2**53:
+        return int(value)
+    return value
+
+
 class Interpreter:
+    LOOP_LIMIT = 1_000_000
+    CALL_LIMIT = 1_000
+
     def __init__(self, output: Callable[[str], None] | None = None, input_fn: Callable[[], str] | None = None):
         self.output = output or (lambda s: print(s, end=""))
         self.input_fn = input_fn or input
         self.globals = Environment()
+        self.loop_depth = 0
+        self.func_depth = 0
+        sys.setrecursionlimit(max(sys.getrecursionlimit(), self.CALL_LIMIT * 12))
         self._install_builtins()
 
     def _install_builtins(self) -> None:
@@ -557,9 +587,30 @@ class Interpreter:
                 raise BetaError("FLOOR expects one argument", line)
             return int(as_number(args[0], line) // 1)
 
+        def at(args, line):
+            if len(args) != 2:
+                raise BetaError("AT expects a text value and an index", line)
+            text = args[0] if isinstance(args[0], str) else str(args[0])
+            index = int(as_number(args[1], line))
+            if index < 0:
+                index += len(text)
+            if index < 0 or index >= len(text):
+                raise BetaError(f"index {args[1]!r} is outside '{text}'", line)
+            return text[index]
+
+        def piece(args, line):
+            if len(args) != 3:
+                raise BetaError("PIECE expects text, a start, and an end", line)
+            text = args[0] if isinstance(args[0], str) else str(args[0])
+            start = int(as_number(args[1], line))
+            end = int(as_number(args[2], line))
+            return text[start:end]
+
         self.globals.declare("length", ("builtin", length))
         self.globals.declare("absolute", ("builtin", absolute))
         self.globals.declare("floor", ("builtin", floor_of))
+        self.globals.declare("at", ("builtin", at))
+        self.globals.declare("piece", ("builtin", piece))
 
     def run(self, program: Program) -> None:
         self.execute_block(program.body, self.globals)
@@ -574,25 +625,40 @@ class Interpreter:
             self.output(self._stringify(value) + "\n")
             return
         if isinstance(stmt, Assign):
-            env.set(stmt.name, self.eval(stmt.expr, env))
+            env.declare(stmt.name, self.eval(stmt.expr, env))
             return
         if isinstance(stmt, If):
             branch = stmt.then_body if is_sigma(self.eval(stmt.cond, env)) else stmt.else_body
             self.execute_block(branch, env)
             return
         if isinstance(stmt, While):
-            while is_sigma(self.eval(stmt.cond, env)):
-                try:
-                    self.execute_block(stmt.body, env)
-                except EscapeGrind:
-                    break
+            spins = 0
+            self.loop_depth += 1
+            try:
+                while is_sigma(self.eval(stmt.cond, env)):
+                    spins += 1
+                    if spins > self.LOOP_LIMIT:
+                        raise BetaError(
+                            f"grind ran past {self.LOOP_LIMIT} turns. ESCAPE THE GRIND, or the condition is beta",
+                            stmt.line,
+                        )
+                    try:
+                        self.execute_block(stmt.body, env)
+                    except EscapeGrind:
+                        break
+            finally:
+                self.loop_depth -= 1
             return
         if isinstance(stmt, Func):
             env.declare(stmt.name, ("user", stmt.params, stmt.body, env))
             return
         if isinstance(stmt, Return):
+            if self.func_depth == 0:
+                raise BetaError("CASH OUT outside a hustle. There is nothing to cash", stmt.line)
             raise CashOut(self.eval(stmt.expr, env))
         if isinstance(stmt, Break):
+            if self.loop_depth == 0:
+                raise BetaError("ESCAPE THE GRIND outside a grind. There is no grind to escape", stmt.line)
             raise EscapeGrind()
         if isinstance(stmt, ExprStmt):
             self.eval(stmt.expr, env)
@@ -652,25 +718,36 @@ class Interpreter:
         if expr.op == "PLUS":
             if isinstance(left, str) or isinstance(right, str):
                 return self._stringify(left) + self._stringify(right)
-            return as_number(left, line) + as_number(right, line)
+            return tidy(as_number(left, line) + as_number(right, line))
         if expr.op == "MINUS":
-            return as_number(left, line) - as_number(right, line)
+            return tidy(as_number(left, line) - as_number(right, line))
         if expr.op == "TIMES":
             if isinstance(left, str) and isinstance(right, (int, float)) and not isinstance(right, bool):
-                return left * int(right)
+                count = int(right)
+                if count < 0:
+                    raise BetaError("a string cannot be repeated a negative number of times", line)
+                return left * count
             if isinstance(right, str) and isinstance(left, (int, float)) and not isinstance(left, bool):
-                return right * int(left)
-            return as_number(left, line) * as_number(right, line)
+                count = int(left)
+                if count < 0:
+                    raise BetaError("a string cannot be repeated a negative number of times", line)
+                return right * count
+            return tidy(as_number(left, line) * as_number(right, line))
         if expr.op == "DIV":
             denom = as_number(right, line)
             if denom == 0:
                 raise BetaError("division by zero. Even a Bugatti stops for that", line)
-            return as_number(left, line) / denom
+            return tidy(as_number(left, line) / denom)
+        if expr.op == "IDIV":
+            denom = as_number(right, line)
+            if denom == 0:
+                raise BetaError("split by zero. Even a Bugatti stops for that", line)
+            return int(as_number(left, line) // denom)
         if expr.op == "MOD":
             denom = as_number(right, line)
             if denom == 0:
                 raise BetaError("modulo by zero. Beta arithmetic", line)
-            return as_number(left, line) % denom
+            return tidy(as_number(left, line) % denom)
         if expr.op == "GT":
             return self._cmp(left, right, line) > 0
         if expr.op == "LT":
@@ -702,10 +779,15 @@ class Interpreter:
         local = Environment(closure)
         for name, value in zip(params, args):
             local.declare(name, value)
+        if self.func_depth >= self.CALL_LIMIT:
+            raise BetaError(f"hustle nested past {self.CALL_LIMIT}. Cash out earlier", expr.line)
+        self.func_depth += 1
         try:
             self.execute_block(body, local)
         except CashOut as cash:
             return cash.value
+        finally:
+            self.func_depth -= 1
         return 0
 
     @staticmethod
@@ -722,7 +804,10 @@ class Interpreter:
 def execute_source(source: str, output: Callable[[str], None] | None = None, input_fn: Callable[[], str] | None = None) -> None:
     tokens = Lexer(source).tokenize()
     program = Parser(tokens).parse()
-    Interpreter(output=output, input_fn=input_fn).run(program)
+    try:
+        Interpreter(output=output, input_fn=input_fn).run(program)
+    except RecursionError:
+        raise BetaError("the hustle recursed until the stack quit. Cash out earlier") from None
 
 
 def repl() -> None:

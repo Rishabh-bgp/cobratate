@@ -37,7 +37,8 @@ Requires Python 3.10 or newer. No dependencies.
 | `ESCAPE THE GRIND` | Leave the innermost grind |
 | `HUSTLE name WITH a AND b ... DONE HUSTLING` | Define a function; `WITH` and parameters are optional |
 | `CASH OUT expr` | Return from the current hustle |
-| `CALL name WITH expr AND expr` | Call a hustle. `AND` separates arguments, so boolean `AND` / `OR` inside an argument must be parenthesized |
+| `CALL name WITH expr AND expr` | Call a hustle. `AND` or a comma separates arguments. A boolean `AND` inside an argument must be parenthesized |
+| `CALL name (expr, expr)` | Call that ends at `)`. Use this when an operator follows the call |
 
 `ASK THE MATRIX` reads one line. A line that parses as an integer or a float becomes that number; anything else stays a string.
 
@@ -53,25 +54,30 @@ Requires Python 3.10 or newer. No dependencies.
 | Add, or concatenate if either side is a string | `PLUS` |
 | Subtract | `MINUS` |
 | Multiply; a string times an integer repeats the string | `TIMES` |
-| Divide (real division) | `DIVIDED BY` |
+| Divide; an exact whole result stays an integer | `DIVIDED BY` |
+| Floor division | `SPLIT BY` |
 | Remainder | `MODULO` |
 | Comparisons | `IS GREATER THAN`, `IS LESS THAN`, `IS THE SAME AS`, `IS NOT THE SAME AS` |
 | Logic, short-circuit | `AND`, `OR`, `NOT` |
 | Grouping | `( ... )` |
 
-Precedence, tightest first: unary `NOT` / `MINUS`, then `TIMES` / `DIVIDED BY` / `MODULO`, then `PLUS` / `MINUS`, then comparisons, then `AND`, then `OR`.
+Precedence, tightest first: unary `NOT` / `MINUS`, then `TIMES` / `DIVIDED BY` / `SPLIT BY` / `MODULO`, then `PLUS` / `MINUS`, then comparisons, then `AND`, then `OR`.
 
 ## Built-in hustles
 
 - `CALL length WITH value` — length of the value rendered as text
 - `CALL absolute WITH n` — absolute value
 - `CALL floor WITH n` — greatest integer not above `n`
+- `CALL at WITH text AND index` — one character; a negative index counts from the end
+- `CALL piece WITH text AND start AND end` — slice, Python rules
 
 ## Comments and errors
 
 A comment runs from `MATRIX:`, `#`, or `//` to the end of the line.
 
-Runtime and syntax failures raise `Beta behavior detected`. Division by zero is rejected. An unknown name is "not in the garage."
+Runtime and syntax failures raise `Beta behavior detected`, including an unclosed block, a missing hustle, division by zero, an index outside a string, `CASH OUT` outside a hustle, and `ESCAPE THE GRIND` outside a grind. A grind stops after one million turns. A hustle stops after one thousand nested calls. An unknown name is "not in the garage."
+
+Assignment binds in the current block. A hustle can read an outer name, and assigning that name inside the hustle creates a local binding rather than changing the outer one. Parameters are local. `CASH OUT` leaves only the current hustle. A missing `CASH OUT` yields `0`.
 
 ## Examples
 
@@ -88,4 +94,4 @@ Runtime and syntax failures raise `Beta behavior detected`. Division by zero is 
 
 ## Scope
 
-A hustle closes over the environment in which it was defined. Parameters and assignments inside a hustle are local unless the name already exists in an outer environment, in which case the assignment updates that outer binding. `CASH OUT` leaves only the current hustle. A missing `CASH OUT` yields `0`.
+A hustle closes over the environment in which it was defined, for reading. Assignment does not write through to an outer environment. `CASH OUT` leaves only the current hustle. A missing `CASH OUT` yields `0`.
