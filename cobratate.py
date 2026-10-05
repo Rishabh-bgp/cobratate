@@ -552,8 +552,14 @@ class Interpreter:
                 raise BetaError("ABSOLUTE GRIND expects one argument", line)
             return abs(as_number(args[0], line))
 
+        def floor_of(args, line):
+            if len(args) != 1:
+                raise BetaError("FLOOR expects one argument", line)
+            return int(as_number(args[0], line) // 1)
+
         self.globals.declare("length", ("builtin", length))
         self.globals.declare("absolute", ("builtin", absolute))
+        self.globals.declare("floor", ("builtin", floor_of))
 
     def run(self, program: Program) -> None:
         self.execute_block(program.body, self.globals)

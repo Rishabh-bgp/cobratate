@@ -12,6 +12,10 @@ BACK TO THE MATRIX
 
 The banners are optional. A file of bare statements is also a program.
 
+## Origin
+
+Cobratate was written during a hackathon at the Indian Institute of Technology Jammu, in the course of an internship there. The constraint was a working language before the hall closed. The phrases came first; the evaluator was fitted behind them the same night. A fuller account is in [ORIGIN.md](ORIGIN.md).
+
 ## Run it
 
 ```
@@ -61,6 +65,7 @@ Precedence, tightest first: unary `NOT` / `MINUS`, then `TIMES` / `DIVIDED BY` /
 
 - `CALL length WITH value` — length of the value rendered as text
 - `CALL absolute WITH n` — absolute value
+- `CALL floor WITH n` — greatest integer not above `n`
 
 ## Comments and errors
 
@@ -75,6 +80,11 @@ Runtime and syntax failures raise `Beta behavior detected`. Division by zero is 
 - `examples/fizz.cbt` — FizzBuzz, as COBRA / TATE / COBRATATE
 - `examples/fib.cbt` — recursive Fibonacci
 - `examples/hustle.cbt` — functions, booleans, string repeat
+- `examples/primes.cbt` — trial division up to a limit
+- `examples/euclid.cbt` — greatest common divisor, least common multiple, reduced fraction
+- `examples/collatz.cbt` — hailstone steps and peak, with the longest chain
+- `examples/binomial.cbt` — Pascal's triangle by combinations
+- `examples/bases.cbt` — binary, hexadecimal, and an arbitrary integer base
 
 ## Scope
 
