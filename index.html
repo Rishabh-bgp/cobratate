@@ -3,319 +3,339 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Cobratate — escape the Matrix</title>
-  <meta name="description" content="Cobratate, an esoteric imperative language by Er. Rishabh Aryan. Ordinary programs, data structures, and small learning models.">
+  <title>Cobratate — language, manual, and programs</title>
+  <meta name="description" content="Cobratate 1.2, an esoteric imperative language by Er. Rishabh Aryan. Interpreter, manual, ordinary programs, data structures, and teaching models.">
   <link rel="icon" href="site/mark.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist+Mono:wght@400;500&family=Outfit:wght@360;500;650&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist+Mono:wght@400;500&family=Outfit:wght@380;500;640&display=swap" rel="stylesheet">
   <style>
     :root {
-      --ink: #090909;
-      --panel: rgba(18, 18, 18, 0.92);
-      --line: rgba(212, 175, 95, 0.38);
+      --ink: #0c0c0c;
+      --panel: #161616;
+      --line: rgba(212, 175, 95, 0.32);
       --gold: #e0c27a;
-      --gold-2: #9a7433;
-      --paper: #f4efe4;
-      --mute: #a39886;
+      --gold-2: #b18945;
+      --paper: #f6f1e7;
+      --mute: #b3a894;
       --code: #8dbe8a;
-      --glow: rgba(224, 194, 122, 0.16);
-      --wash: rgba(196, 73, 58, 0.08);
+      --glow: rgba(224, 194, 122, 0.14);
     }
     html[data-theme="light"] {
-      --ink: #f7f1e6;
-      --panel: rgba(255, 252, 246, 0.92);
-      --line: rgba(122, 84, 28, 0.28);
-      --gold: #8a5a12;
-      --gold-2: #6d4710;
-      --paper: #1c160f;
-      --mute: #6d6254;
-      --code: #1f6b3a;
-      --glow: rgba(196, 146, 58, 0.18);
-      --wash: rgba(196, 73, 58, 0.06);
+      --ink: #f6f1e7;
+      --panel: #fffdf8;
+      --line: rgba(92, 64, 22, 0.18);
+      --gold: #7a5210;
+      --gold-2: #6a4710;
+      --paper: #1b1610;
+      --mute: #655b4e;
+      --code: #1d6a38;
+      --glow: rgba(176, 128, 42, 0.12);
     }
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
     body {
       margin: 0;
       background:
-        radial-gradient(900px 480px at 80% -10%, var(--glow), transparent 60%),
-        radial-gradient(700px 500px at -10% 20%, var(--wash), transparent 55%),
+        radial-gradient(880px 420px at 100% -8%, var(--glow), transparent 60%),
         var(--ink);
       color: var(--paper);
       font-family: Outfit, sans-serif;
-      font-weight: 360;
-      line-height: 1.55;
+      font-weight: 380;
+      line-height: 1.6;
     }
-    a { color: var(--gold); text-decoration: none; }
-    a:hover { text-decoration: underline; }
+    a { color: var(--gold); }
+    img { max-width: 100%; height: auto; }
+    .skip {
+      position: absolute; left: 12px; top: -40px;
+      background: var(--gold); color: #1a1408; padding: 8px 12px;
+    }
+    .skip:focus { top: 12px; }
     nav {
-      position: sticky; top: 0; z-index: 4;
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 14px 7vw;
-      background: color-mix(in srgb, var(--ink) 84%, transparent);
+      position: sticky; top: 0; z-index: 5;
+      display: flex; justify-content: space-between; align-items: center; gap: 16px;
+      padding: 12px 6vw;
+      background: color-mix(in srgb, var(--ink) 88%, transparent);
       border-bottom: 1px solid var(--line);
       backdrop-filter: blur(12px);
     }
-    nav strong { letter-spacing: 0.22em; font-size: 13px; }
-    nav .links { display: flex; gap: 20px; align-items: center; font-size: 14px; }
-    button.mode {
-      border: 1px solid var(--line);
-      background: transparent;
-      color: var(--paper);
-      border-radius: 999px;
-      padding: 8px 12px;
-      cursor: pointer;
-      font: inherit;
+    nav strong { letter-spacing: 0.2em; font-size: 13px; }
+    nav .links { display: flex; flex-wrap: wrap; gap: 14px 18px; align-items: center; font-size: 14px; }
+    button.mode, button.menu {
+      border: 1px solid var(--line); background: transparent; color: var(--paper);
+      border-radius: 999px; padding: 8px 12px; cursor: pointer; font: inherit;
     }
+    button.menu { display: none; }
+    header, section, footer { padding-left: 6vw; padding-right: 6vw; }
     header {
-      display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 48px;
-      align-items: center;
-      padding: 68px 7vw 28px;
+      display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(220px, 0.7fr);
+      gap: 36px; align-items: center; padding-top: 56px; padding-bottom: 20px;
     }
-    .eyebrow {
-      color: var(--gold);
-      letter-spacing: 0.28em;
-      text-transform: uppercase;
-      font-size: 12px;
-      margin-bottom: 16px;
-    }
-    h1 {
-      font-family: "Instrument Serif", serif;
-      font-weight: 400;
-      font-size: clamp(64px, 9vw, 118px);
-      line-height: 0.86;
-      margin: 0 0 18px;
-    }
+    .eyebrow { color: var(--gold); letter-spacing: 0.22em; text-transform: uppercase; font-size: 12px; margin: 0 0 12px; }
+    h1, h2, h3 { font-family: "Instrument Serif", serif; font-weight: 400; }
+    h1 { font-size: clamp(48px, 8vw, 92px); line-height: 0.9; margin: 0 0 16px; }
     h1 em { font-style: italic; color: var(--gold); }
-    .lede { max-width: 640px; font-size: 20px; }
-    .actions { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
+    h2 { font-size: clamp(32px, 4vw, 44px); margin: 0 0 8px; }
+    h3 { font-size: 24px; margin: 8px 0; }
+    .lede, .sub { max-width: 72ch; }
+    .lede { font-size: 1.15rem; }
+    .sub, .note { color: var(--mute); }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
     .btn {
-      border: 1px solid var(--gold);
-      color: #1a1408;
-      background: var(--gold);
-      padding: 12px 18px;
-      border-radius: 999px;
-      font-weight: 650;
+      display: inline-block; border: 1px solid var(--gold); background: var(--gold);
+      color: #1a1408; padding: 11px 16px; border-radius: 999px; font-weight: 640; text-decoration: none;
     }
     html[data-theme="light"] .btn { color: #fffaf2; }
     .btn.ghost { background: transparent; color: var(--gold); }
-    .mark {
-      justify-self: end;
-      width: min(420px, 100%);
-      border-radius: 28px;
-      border: 1px solid var(--line);
-      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.28);
+    .mark { width: 100%; border-radius: 24px; border: 1px solid var(--line); }
+    .facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 28px 0; }
+    .facts div, .panel, article, .card {
+      background: var(--panel); border: 1px solid var(--line); border-radius: 16px;
     }
-    section { padding: 26px 7vw 8px; }
-    h2 {
-      font-family: "Instrument Serif", serif;
-      font-size: 44px;
-      font-weight: 400;
-      margin: 0 0 8px;
-    }
-    .sub { color: var(--mute); max-width: 720px; }
-    .terminal, .creator, article, .card {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 18px;
-    }
-    .terminal { margin-top: 22px; overflow: hidden; }
+    .facts div { padding: 14px 16px; }
+    .facts strong { display: block; font-size: 15px; }
+    .facts span, article span, .card span { color: var(--mute); font-size: 13px; }
+    section { padding-top: 34px; }
+    .creator { display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: 22px; align-items: center; padding: 20px; }
+    .creator img { width: 140px; border-radius: 16px; }
+    .terminal { margin-top: 16px; overflow: hidden; }
     .bar {
-      display: flex; justify-content: space-between;
-      padding: 10px 16px;
-      color: var(--mute);
-      border-bottom: 1px solid var(--line);
-      font-family: "Geist Mono", monospace;
-      font-size: 12px;
+      display: flex; justify-content: space-between; gap: 12px;
+      padding: 10px 14px; color: var(--mute); border-bottom: 1px solid var(--line);
+      font-family: "Geist Mono", ui-monospace, monospace; font-size: 12px;
     }
-    pre {
-      margin: 0;
-      padding: 22px 20px 26px;
-      font-family: "Geist Mono", monospace;
-      font-size: 14.5px;
-      line-height: 1.7;
-      overflow-x: auto;
-    }
+    pre, code { font-family: "Geist Mono", ui-monospace, monospace; }
+    pre { margin: 0; padding: 18px 16px 22px; overflow-x: auto; font-size: 13.5px; line-height: 1.7; }
     .kw { color: var(--gold); }
-    .str { color: #c9a15b; }
     .out { color: var(--code); }
-    .grid, .cards { display: grid; gap: 16px; margin-top: 22px; }
-    .grid { grid-template-columns: repeat(3, 1fr); }
-    .cards { grid-template-columns: 1fr 1fr; }
-    article, .card { padding: 20px; }
-    article span, .card span {
-      color: var(--gold-2);
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      font-size: 11px;
+    .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 16px; }
+    article, .card { padding: 18px; min-width: 0; }
+    table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 15px; }
+    th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    .scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 16px; background: var(--panel); }
+    .scroll table { margin: 0; min-width: 640px; }
+    .scroll th, .scroll td { padding: 12px 14px; }
+    .syllabus { margin: 36px 6vw; padding: 24px; border: 1px solid var(--line); border-radius: 18px; background: var(--panel); }
+    footer { padding-top: 24px; padding-bottom: 48px; color: var(--mute); border-top: 1px solid var(--line); margin-top: 20px; }
+    @media (max-width: 980px) {
+      .facts, .grid { grid-template-columns: 1fr 1fr; }
+      header, .creator { grid-template-columns: 1fr; }
+      .mark, .creator img { width: min(280px, 100%); }
     }
-    article h3, .card h3 { margin: 8px 0; font-size: 22px; }
-    ul { margin: 8px 0 0; padding-left: 18px; }
-    li { margin: 7px 0; }
-    .creator {
-      display: grid;
-      grid-template-columns: 160px 1fr;
-      gap: 28px;
-      align-items: center;
-      padding: 24px;
-      margin-top: 18px;
-    }
-    .creator img { width: 160px; border-radius: 20px; border: 1px solid var(--line); }
-    .syllabus {
-      margin: 34px 7vw;
-      padding: 28px;
-      border-radius: 22px;
-      border: 1px solid var(--line);
-      background: linear-gradient(135deg, var(--glow), transparent 55%);
-    }
-    footer {
-      padding: 28px 7vw 48px;
-      color: var(--mute);
-      font-size: 14px;
-      border-top: 1px solid var(--line);
-      margin-top: 28px;
-    }
-    @media (max-width: 860px) {
-      header, .grid, .cards, .creator { grid-template-columns: 1fr; }
-      nav .links a { display: none; }
-      .mark, .creator img { justify-self: start; width: min(280px, 100%); }
+    @media (max-width: 720px) {
+      button.menu { display: inline-block; }
+      nav .links { display: none; width: 100%; }
+      nav.open { flex-wrap: wrap; }
+      nav.open .links { display: flex; }
+      .facts, .grid { grid-template-columns: 1fr; }
+      header { padding-top: 32px; }
+      h1 { font-size: 46px; }
     }
   </style>
 </head>
 <body>
-  <nav>
+  <a class="skip" href="#content">Skip to content</a>
+  <nav id="nav">
     <strong>COBRATATE</strong>
+    <button class="menu" type="button" id="menu" aria-expanded="false">Menu</button>
     <div class="links">
-      <a href="#creator">Creator</a>
-      <a href="#showcase">Showcase</a>
+      <a href="#install">Install</a>
+      <a href="#language">Language</a>
+      <a href="#programs">Programs</a>
+      <a href="#manual">Manual</a>
       <a href="#syllabus">Syllabus</a>
       <a href="https://github.com/Rishabh-bgp/cobratate">Repository</a>
-      <button class="mode" type="button" id="mode" aria-label="Toggle color mode">Light</button>
+      <button class="mode" type="button" id="mode">Light</button>
     </div>
   </nav>
-  <header>
+  <header id="content">
     <div>
-      <p class="eyebrow">Esoteric imperative language · version 1.2</p>
-      <h1>What color<br>is your <em>Bugatti?</em></h1>
-      <p class="lede">A teaching language with a loud vocabulary and quiet rules. Ordinary programs, numerical work, data structures, and small learning models already run in the repository. Created by Er. Rishabh Aryan.</p>
+      <p class="eyebrow">Version 1.2 · MIT License · Python 3.10+</p>
+      <h1>What color is your <em>Bugatti?</em></h1>
+      <p class="lede">Cobratate is an esoteric imperative language. The vocabulary is borrowed from a public persona. The evaluation rules are those of a small teaching language: names, arithmetic, conditionals, loops, functions, and lists. The interpreter is one Python file. The manual is organised like a language reference.</p>
       <div class="actions">
-        <a class="btn" href="https://github.com/Rishabh-bgp/cobratate">Clone the repository</a>
-        <a class="btn ghost" href="https://github.com/Rishabh-bgp/cobratate/blob/main/docs/programs.md">Open the catalogue</a>
+        <a class="btn" href="https://github.com/Rishabh-bgp/cobratate">Repository</a>
+        <a class="btn ghost" href="https://github.com/Rishabh-bgp/cobratate/blob/main/docs/tutorial.md">Tutorial</a>
+        <a class="btn ghost" href="https://github.com/Rishabh-bgp/cobratate/blob/main/docs/programs.md">Program catalogue</a>
       </div>
     </div>
-    <img class="mark" src="site/mark.jpg" alt="Black cobra coiled through a gold monogram">
+    <img class="mark" src="site/mark.jpg" alt="Cobratate emblem: a cobra within a gold ring">
   </header>
+  <section>
+    <div class="facts">
+      <div><strong>1.2</strong><span>Current language version</span></div>
+      <div><strong>20 programs</strong><span>Checked examples in four groups</span></div>
+      <div><strong>No packages</strong><span>Interpreter is cobratate.py</span></div>
+      <div><strong>MIT</strong><span>Classroom copying is already permitted</span></div>
+    </div>
+  </section>
 
   <section id="creator">
-    <h2>The maker.</h2>
-    <p class="sub">Cobratate was written during a hackathon at the Indian Institute of Technology Jammu, in the course of an internship there. The phrases came first. The evaluator was fitted behind them the same night.</p>
-    <div class="creator">
+    <h2>Creator</h2>
+    <div class="panel creator">
       <img src="site/mark.jpg" alt="">
       <div>
-        <p class="eyebrow">Creator</p>
-        <h2 style="margin-top:0">Er. Rishabh Aryan</h2>
-        <p>M.Tech student in Artificial Intelligence and Data Science at the Indian Institute of Information Technology, Bhagalpur. The language, the interpreter, the manual, and the example programs in this repository are his.</p>
-        <p>
-          <a href="https://github.com/Rishabh-bgp">GitHub</a> ·
-          <a href="https://orcid.org/0009-0004-7595-9440">ORCID</a> ·
-          <a href="https://github.com/Rishabh-bgp/cobratate">Cobratate</a>
-        </p>
+        <p class="eyebrow">Er. Rishabh Aryan</p>
+        <p>M.Tech student in Artificial Intelligence and Data Science, Department of Computer Science and Engineering, Indian Institute of Information Technology, Bhagalpur. Cobratate was written during a hackathon at the Indian Institute of Technology Jammu, in the course of an internship there. The repository holds the interpreter, the manual, and the programs added so the claim of a working language can be checked. No prize is claimed for that session.</p>
+        <p><a href="https://github.com/Rishabh-bgp">GitHub</a> · <a href="https://orcid.org/0009-0004-7595-9440">ORCID 0009-0004-7595-9440</a> · <a href="https://github.com/Rishabh-bgp/cobratate/blob/main/ORIGIN.md">Origin note</a></p>
       </div>
     </div>
   </section>
 
-  <section id="run">
-    <h2>Four commands. Then you are in.</h2>
-    <p class="sub">Python 3.10 or newer. No packages. On Windows use <code>py</code> if <code>python</code> is not recognised. On macOS or Linux, <code>python3</code> is the usual name.</p>
-    <div class="terminal">
-      <div class="bar"><span>topg@matrix</span><span>cobratate.py</span></div>
+  <section id="install">
+    <h2>Install and run</h2>
+    <p class="sub">Python 3.10 or newer is required. If <code>python</code> is missing, use <code>python3</code> on macOS or Linux, or <code>py</code> on Windows. A ZIP download from the repository works if Git is not installed.</p>
+    <div class="panel terminal">
+      <div class="bar"><span>repository root</span><span>three forms</span></div>
       <pre><span class="out">$</span> git clone https://github.com/Rishabh-bgp/cobratate.git
 <span class="out">$</span> cd cobratate
+<span class="out">$</span> python cobratate.py --version
 <span class="out">$</span> python cobratate.py examples/intro/hello.cbt
-What color is your Bugatti?
-Irrelevant. You are either a Top G or you are not.
-Top G
-
-<span class="kw">ESCAPE THE MATRIX</span>
-<span class="kw">WHAT COLOR IS YOUR BUGATTI</span> <span class="str">"What color is your Bugatti?"</span>
-<span class="kw">BACK TO THE MATRIX</span></pre>
+<span class="out">$</span> python cobratate.py -c "WHAT COLOR IS YOUR BUGATTI 21 PLUS 21"
+<span class="out">$</span> python cobratate.py</pre>
+    </div>
+    <div class="grid">
+      <article>
+        <span>File</span>
+        <h3>A program</h3>
+        <p>Save text as <code>name.cbt</code> and pass the path. A program error exits with status 1 and a line beginning <em>Beta behavior detected</em>.</p>
+      </article>
+      <article>
+        <span>-c</span>
+        <h3>One statement</h3>
+        <p>Quotes depend on the shell. A wrong command line exits with status 2. A missing file is reported on the standard error stream.</p>
+      </article>
+      <article>
+        <span>No argument</span>
+        <h3>The loop</h3>
+        <p>The prompt is <code>topg></code>. A line that opens a block waits for <code>PERIOD</code>, <code>STOP GRINDING</code>, or <code>DONE HUSTLING</code>. <code>:quit</code> leaves.</p>
+      </article>
     </div>
   </section>
 
-  <section id="showcase">
-    <h2>What the language already writes.</h2>
-    <p class="sub">These are not proposals. Each file is in the repository and was run. The checked results are in the <a href="https://github.com/Rishabh-bgp/cobratate/blob/main/docs/programs.md">program catalogue</a>.</p>
+  <section id="language">
+    <h2>Language</h2>
+    <p class="sub">A program is enclosed by <code>ESCAPE THE MATRIX</code> and <code>BACK TO THE MATRIX</code>. <code>MATRIX:</code> starts a comment. When the manual and <code>cobratate.py</code> disagree, the interpreter is the specification.</p>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Form</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code>WHAT COLOR IS YOUR BUGATTI expr</code></td><td>Print the value and a newline.</td></tr>
+          <tr><td><code>BUGATTI name EQUALS expr</code></td><td>Bind a name in the current environment.</td></tr>
+          <tr><td><code>IF expr THEN … OTHERWISE YOU ARE A BETA … PERIOD</code></td><td>Conditional. The otherwise-branch may be omitted.</td></tr>
+          <tr><td><code>GRIND WHILE expr … STOP GRINDING</code></td><td>Loop while the test is sigma. <code>ESCAPE THE GRIND</code> leaves it.</td></tr>
+          <tr><td><code>HUSTLE name WITH a AND b … DONE HUSTLING</code></td><td>Define a function. <code>CASH OUT expr</code> returns.</td></tr>
+          <tr><td><code>CALL name (expr, expr)</code></td><td>Call. The parenthesis ends the argument list, so a following operator is not swallowed.</td></tr>
+          <tr><td><code>ASK THE MATRIX</code></td><td>Read one line. <code>ASK THE MATRIX FOR A NUMBER</code> reads a number.</td></tr>
+          <tr><td><code>[expr, expr]</code></td><td>A list, called a garage. <code>PLUS</code> concatenates garages and repeats text.</td></tr>
+          <tr><td><code>CALL put (garage, index, value)</code></td><td>A new garage with one index replaced. The original is not modified.</td></tr>
+        </tbody>
+      </table>
+    </div>
     <div class="grid">
       <article>
-        <span>Ordinary programs</span>
-        <h3>The first garage</h3>
-        <ul>
-          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/intro/hello.cbt">Hello</a> — print</li>
-          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/intro/grind.cbt">Grind</a> — a compounding loop</li>
-          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/intro/fizz.cbt">FizzBuzz</a> — COBRA, TATE, COBRATATE</li>
-          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/intro/hustle.cbt">Hustle</a> — functions and booleans</li>
-          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/intro/garage.cbt">Garage</a> — lists and indexing</li>
-        </ul>
+        <span>Values</span>
+        <h3>Four kinds</h3>
+        <p>Numbers, text, the booleans <code>SIGMA</code> and <code>BETA</code>, and garages. <code>CALL kind</code> reports which. Comparisons and arithmetic do not coerce text.</p>
       </article>
       <article>
-        <span>Numerical work</span>
-        <h3>Small software</h3>
-        <ul>
-          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/numbers/primes.cbt">Primes</a> below 50</li>
-          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/numbers/euclid.cbt">Euclid</a> — gcd 42, lcm 252</li>
-          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/numbers/fib.cbt">Fibonacci</a> by recursion</li>
-          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/numbers/binomial.cbt">Pascal's triangle</a></li>
-          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/numbers/collatz.cbt">Collatz</a> hailstones</li>
-          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/numbers/bases.cbt">Bases</a> — 42 is 101010</li>
-        </ul>
+        <span>Arithmetic</span>
+        <h3>Exact when it can be</h3>
+        <p><code>DIVIDED BY</code> is real division, and an exact whole result stays an integer. <code>SPLIT BY</code> is floor division. <code>MODULO</code> is remainder.</p>
       </article>
       <article>
-        <span>One phrase</span>
-        <h3>One meaning</h3>
-        <p><em>What color is your Bugatti</em> prints. <em>Grind while</em> loops. <em>Hustle</em> defines a function. <em>Cash out</em> returns. A list is a garage. <em>Put</em> returns a new one.</p>
+        <span>Limits</span>
+        <h3>Fail closed</h3>
+        <p>A grind stops after one million turns. A call stops after one thousand nested hustles. An error names the line and, inside a call, the hustle stack.</p>
       </article>
     </div>
-    <div class="cards">
-      <div class="card">
-        <span>examples/dsa</span>
-        <h3>Data structures</h3>
-        <ul>
-          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/dsa/bubble.cbt">Bubble sort</a> — <code>[5, 1, 4, 2, 8, 0]</code> becomes sorted</li>
-          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/dsa/search.cbt">Linear scan and binary search</a> — 9 at index 4</li>
-          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/dsa/stack.cbt">Stack</a> — push, top, pop</li>
-          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/dsa/twosum.cbt">Two-sum</a> — indices <code>[0, 1]</code></li>
-          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/dsa/bfs.cbt">Breadth-first search</a> — visits <code>[0, 1, 2, 3]</code></li>
-        </ul>
-      </div>
-      <div class="card">
-        <span>examples/ml</span>
-        <h3>Machine learning</h3>
-        <ul>
-          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/ml/regression.cbt">Linear regression</a> — weight about 1.99 on y = 2x</li>
-          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/ml/perceptron.cbt">Perceptron</a> — AND classifies as 0 0 0 1</li>
-          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/ml/knn.cbt">One-nearest neighbour</a> — two query classes</li>
-          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/ml/normalize.cbt">Min-max scaling</a> — <code>[10, 20, 30]</code> to <code>[0, 0.5, 1]</code></li>
-        </ul>
-      </div>
+    <p class="note">Built-ins: <code>length</code>, <code>absolute</code>, <code>floor</code>, <code>at</code>, <code>piece</code>, <code>put</code>, <code>kind</code>, <code>text</code>, <code>number</code>, <code>min</code>, <code>max</code>. There are no classes, modules, files, or a network library.</p>
+  </section>
+
+  <section id="programs">
+    <h2>Programs</h2>
+    <p class="sub">Twenty files, each run with no input. A stack is a garage whose last element is the top. A queue is a garage whose first element is the front. A graph is a garage of neighbour garages. The learning programs use ordinary arithmetic, not a numerical library.</p>
+    <h3>Introduction</h3>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Program</th><th>What it shows</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/intro/hello.cbt">hello.cbt</a></td><td>Print.</td></tr>
+          <tr><td><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/intro/grind.cbt">grind.cbt</a></td><td>Assignment and a compounding loop.</td></tr>
+          <tr><td><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/intro/fizz.cbt">fizz.cbt</a></td><td>FizzBuzz as COBRA, TATE, and COBRATATE.</td></tr>
+          <tr><td><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/intro/hustle.cbt">hustle.cbt</a></td><td>Functions, booleans, and string repeat.</td></tr>
+          <tr><td><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/intro/garage.cbt">garage.cbt</a></td><td>Lists, indexing, kind, and number conversion.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h3>Numerical</h3>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Program</th><th>Checked behaviour</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/numbers/primes.cbt">primes.cbt</a></td><td>Trial division for primes below 50.</td></tr>
+          <tr><td><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/numbers/euclid.cbt">euclid.cbt</a></td><td>Greatest common divisor 42 and least common multiple 252.</td></tr>
+          <tr><td><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/numbers/collatz.cbt">collatz.cbt</a></td><td>Hailstone steps and peak.</td></tr>
+          <tr><td><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/numbers/fib.cbt">fib.cbt</a></td><td>Recursive Fibonacci.</td></tr>
+          <tr><td><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/numbers/binomial.cbt">binomial.cbt</a></td><td>Pascal's triangle.</td></tr>
+          <tr><td><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/numbers/bases.cbt">bases.cbt</a></td><td>42 in base 2 is 101010.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h3>Data structures and algorithms</h3>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Program</th><th>Algorithm</th><th>Checked result</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/dsa/bubble.cbt">bubble.cbt</a></td><td>Bubble sort</td><td><code>[5, 1, 4, 2, 8, 0]</code> becomes <code>[0, 1, 2, 4, 5, 8]</code>.</td></tr>
+          <tr><td><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/dsa/search.cbt">search.cbt</a></td><td>Linear scan and binary search</td><td>9 is at index 4. 8 is absent and returns −1.</td></tr>
+          <tr><td><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/dsa/stack.cbt">stack.cbt</a></td><td>Push, top, and pop</td><td>After three pushes and one pop, <code>[10, 20]</code>.</td></tr>
+          <tr><td><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/dsa/twosum.cbt">twosum.cbt</a></td><td>Pair of indices</td><td><code>[2, 7, 11, 15]</code> and target 9 give <code>[0, 1]</code>.</td></tr>
+          <tr><td><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/dsa/bfs.cbt">bfs.cbt</a></td><td>Breadth-first search</td><td><code>[[1, 2], [3], [3], []]</code> from 0 visits <code>[0, 1, 2, 3]</code>.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h3>Machine learning</h3>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Program</th><th>Model</th><th>Checked result</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/ml/regression.cbt">regression.cbt</a></td><td>Univariate linear regression, 200 steps</td><td>On y = 2x, the weight is about 1.99 and x = 5 predicts about 9.98.</td></tr>
+          <tr><td><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/ml/perceptron.cbt">perceptron.cbt</a></td><td>Perceptron on AND</td><td>The four inputs classify as 0 0 0 1.</td></tr>
+          <tr><td><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/ml/knn.cbt">knn.cbt</a></td><td>One-nearest neighbour</td><td><code>[2, 2]</code> is class 0. <code>[5, 6]</code> is class 1.</td></tr>
+          <tr><td><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/ml/normalize.cbt">normalize.cbt</a></td><td>Min-max scaling</td><td><code>[10, 20, 30]</code> becomes <code>[0, 0.5, 1]</code>. A constant column becomes zeros.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="manual">
+    <h2>Manual</h2>
+    <div class="grid">
+      <article><span>Start</span><h3><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/docs/tutorial.md">Tutorial</a></h3><p>A first program through lists.</p></article>
+      <article><span>Rules</span><h3><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/docs/reference.md">Reference</a></h3><p>Tokens, values, statements, scope, and limits.</p></article>
+      <article><span>Names</span><h3><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/docs/library.md">Built-in hustles</a></h3><p>Argument counts and the errors for a wrong call.</p></article>
+      <article><span>Catalogue</span><h3><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/docs/programs.md">Programs</a></h3><p>Every example and the result it was checked against.</p></article>
+      <article><span>Diagnostics</span><h3><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/docs/errors.md">Errors</a></h3><p>The messages the interpreter raises.</p></article>
+      <article><span>Context</span><h3><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/docs/inspiration.md">Inspiration</a></h3><p>The phrases, and the allegations stated as allegations.</p></article>
     </div>
   </section>
 
   <div class="syllabus" id="syllabus">
-    <p class="eyebrow">Universities, colleges, schools</p>
-    <h2>Put it on the syllabus.</h2>
-    <p>The MIT License already permits a class to copy the interpreter and the manual. No separate permission is required. Use it as a laboratory, not as a replacement for a production language. The six-week map runs from the greeting through lists, sorting, search, a graph, and the learning models above.</p>
-    <p><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/README.md#for-universities-colleges-and-schools">Read the map</a></p>
+    <p class="eyebrow">Universities, colleges, and schools</p>
+    <h2>Syllabus use</h2>
+    <p>The MIT License already permits an institution to copy the interpreter and the manual, distribute them to a class, and modify them for a course, provided the copyright notice and license terms stay with the copy. No separate permission is required. The recommended place is an early laboratory or a one-week interlude, not a replacement for a production language. A department that adopts it should also say that the persona is controversial.</p>
+    <p><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/README.md#for-universities-colleges-and-schools">Six-week laboratory map</a></p>
   </div>
   <footer>
-    <p>Created by Er. Rishabh Aryan. Not affiliated with Andrew Tate. The persona supplies the tokens; the allegations are recorded as allegations in the manual.</p>
+    <p>Created by Er. Rishabh Aryan. Cobratate is not affiliated with, endorsed by, or authorised by Andrew Tate. Version 1.2.</p>
     <p><a href="https://github.com/Rishabh-bgp/cobratate">github.com/Rishabh-bgp/cobratate</a></p>
   </footer>
   <script>
     const root = document.documentElement;
     const button = document.getElementById("mode");
+    const menu = document.getElementById("menu");
+    const nav = document.getElementById("nav");
     const stored = localStorage.getItem("cobratate-theme");
     const preferred = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
     function apply(theme) {
@@ -325,6 +345,10 @@ Top G
     }
     apply(stored || preferred);
     button.addEventListener("click", () => apply(root.dataset.theme === "dark" ? "light" : "dark"));
+    menu.addEventListener("click", () => {
+      const open = nav.classList.toggle("open");
+      menu.setAttribute("aria-expanded", open ? "true" : "false");
+    });
   </script>
 </body>
 </html>
