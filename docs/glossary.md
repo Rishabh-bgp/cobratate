@@ -10,7 +10,7 @@ cash out
 : Return from the current hustle.
 
 cobra
-: Half of the language's name, from the public nickname Cobra Tate. In `examples/fizz.cbt`, the word printed for a multiple of 3.
+: Half of the language's name, from the public nickname Cobra Tate. In `examples/intro/fizz.cbt`, the word printed for a multiple of 3.
 
 garage
 : A list value, written `[1, 2, 3]`. Also the metaphor in the unbound-name diagnostic.

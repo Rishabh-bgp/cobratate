@@ -14,7 +14,7 @@ The kickboxing nickname and the online nickname are why the language is called C
 
 The design rule, fixed on the night the interpreter was first written, is that the joke stops at the token. `WHAT COLOR IS YOUR BUGATTI` prints. `GRIND WHILE` is a while-loop. `HUSTLE` is a function. `CASH OUT` returns. A reader who knows the persona can hear the monologue. A reader who does not can still use the reference manual, because each phrase has one meaning and the meanings compose in the ordinary way.
 
-The sample program `examples/fizz.cbt` is the clearest illustration. Multiples of 3 print `COBRA`, multiples of 5 print `TATE`, and multiples of 15 print `COBRATATE`. The control flow is FizzBuzz.
+The sample program `examples/intro/fizz.cbt` is the clearest illustration. Multiples of 3 print `COBRA`, multiples of 5 print `TATE`, and multiples of 15 print `COBRATATE`. The control flow is FizzBuzz.
 
 ## Allegations, stated as allegations
 
