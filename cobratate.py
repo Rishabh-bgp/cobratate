@@ -2,6 +2,7 @@
 """Cobratate — an esoteric programming language for those who have escaped the Matrix.
 
 Run a program:  python cobratate.py program.cbt
+Run a snippet:  python cobratate.py -c 'WHAT COLOR IS YOUR BUGATTI 21'
 Start the REPL: python cobratate.py
 """
 
@@ -11,6 +12,8 @@ import sys
 from dataclasses import dataclass
 from typing import Any, Callable
 
+VERSION = "1.1.0"
+
 
 # ---------------------------------------------------------------------------
 # Errors
@@ -19,10 +22,15 @@ from typing import Any, Callable
 class BetaError(Exception):
     """Raised when a program exhibits beta behavior."""
 
-    def __init__(self, message: str, line: int | None = None):
+    def __init__(self, message: str, line: int | None = None, stack: list | None = None):
         self.line = line
+        self.stack = list(stack or [])
         where = f" on line {line}" if line else ""
-        super().__init__(f"Beta behavior detected{where}: {message}")
+        text = f"Beta behavior detected{where}: {message}"
+        if self.stack:
+            frames = "\n".join(f"  in hustle {name} on line {lineno}" for name, lineno in self.stack)
+            text = text + "\n" + frames
+        super().__init__(text)
 
 
 class CashOut(Exception):
@@ -156,8 +164,8 @@ class Lexer:
                 word = raw[start:i]
                 self.tokens.append(Token("IDENT", word, lineno))
                 continue
-            if raw[i] in "(),":
-                kind = {"(": "LPAREN", ")": "RPAREN", ",": "COMMA"}[raw[i]]
+            if raw[i] in "(),[]":
+                kind = {"(": "LPAREN", ")": "RPAREN", ",": "COMMA", "[": "LBRACK", "]": "RBRACK"}[raw[i]]
                 self.tokens.append(Token(kind, raw[i], lineno))
                 i += 1
                 continue
@@ -211,6 +219,12 @@ class Binary:
 class Call:
     name: str
     args: list
+    line: int
+
+
+@dataclass
+class Seq:
+    items: list
     line: int
 
 
@@ -460,6 +474,18 @@ class Parser:
             expr = self.parse_expression()
             self.expect("RPAREN", ")")
             return expr
+        if self.check("LBRACK"):
+            self.advance()
+            items = []
+            if not self.check("RBRACK"):
+                items.append(self.parse_expression())
+                while self.check("COMMA"):
+                    self.advance()
+                    if self.check("RBRACK"):
+                        break
+                    items.append(self.parse_expression())
+            self.expect("RBRACK", "]")
+            return Seq(items, tok.line)
         if self.check("CALL"):
             self.advance()
             name = self.expect("IDENT", "a hustle name").value
@@ -540,6 +566,8 @@ def is_sigma(value: Any) -> bool:
         return value != 0
     if isinstance(value, str):
         return value != ""
+    if isinstance(value, list):
+        return len(value) != 0
     return True
 
 
@@ -568,14 +596,18 @@ class Interpreter:
         self.globals = Environment()
         self.loop_depth = 0
         self.func_depth = 0
+        self.stack: list[tuple[str, int]] = []
         sys.setrecursionlimit(max(sys.getrecursionlimit(), self.CALL_LIMIT * 12))
         self._install_builtins()
 
     def _install_builtins(self) -> None:
         def length(args, line):
             if len(args) != 1:
-                raise BetaError("LENGTH OF expects one argument", line)
-            return len(str(args[0]))
+                raise BetaError("LENGTH expects one argument", line)
+            value = args[0]
+            if isinstance(value, (str, list)):
+                return len(value)
+            return len(str(value))
 
         def absolute(args, line):
             if len(args) != 1:
@@ -589,28 +621,84 @@ class Interpreter:
 
         def at(args, line):
             if len(args) != 2:
-                raise BetaError("AT expects a text value and an index", line)
-            text = args[0] if isinstance(args[0], str) else str(args[0])
+                raise BetaError("AT expects a garage or text value and an index", line)
+            target = args[0]
+            if not isinstance(target, (str, list)):
+                target = str(target)
             index = int(as_number(args[1], line))
             if index < 0:
-                index += len(text)
-            if index < 0 or index >= len(text):
-                raise BetaError(f"index {args[1]!r} is outside '{text}'", line)
-            return text[index]
+                index += len(target)
+            if index < 0 or index >= len(target):
+                raise BetaError(f"index {args[1]!r} is outside a value of length {len(target)}", line)
+            return target[index]
 
         def piece(args, line):
             if len(args) != 3:
-                raise BetaError("PIECE expects text, a start, and an end", line)
-            text = args[0] if isinstance(args[0], str) else str(args[0])
+                raise BetaError("PIECE expects text or a garage, a start, and an end", line)
+            target = args[0]
+            if not isinstance(target, (str, list)):
+                target = str(target)
             start = int(as_number(args[1], line))
             end = int(as_number(args[2], line))
-            return text[start:end]
+            return target[start:end]
+
+        def kind(args, line):
+            if len(args) != 1:
+                raise BetaError("KIND expects one argument", line)
+            value = args[0]
+            if isinstance(value, bool):
+                return "sigma"
+            if isinstance(value, (int, float)):
+                return "number"
+            if isinstance(value, str):
+                return "text"
+            if isinstance(value, list):
+                return "garage"
+            if isinstance(value, tuple):
+                return "hustle"
+            return "unknown"
+
+        def as_text(args, line):
+            if len(args) != 1:
+                raise BetaError("TEXT expects one argument", line)
+            return Interpreter._stringify(args[0])
+
+        def as_num(args, line):
+            if len(args) != 1:
+                raise BetaError("NUMBER expects one argument", line)
+            value = args[0]
+            if isinstance(value, bool):
+                return 1 if value else 0
+            if isinstance(value, (int, float)):
+                return value
+            if isinstance(value, str):
+                try:
+                    return float(value) if "." in value else int(value)
+                except ValueError:
+                    raise BetaError(f"cannot read a number from {value!r}", line) from None
+            raise BetaError(f"cannot read a number from {value!r}", line)
+
+        def extreme(which):
+            def run(args, line, which=which):
+                if not args:
+                    raise BetaError(f"{which} expects at least one argument", line)
+                best = args[0]
+                for item in args[1:]:
+                    if (item > best) if which == "MAX" else (item < best):
+                        best = item
+                return best
+            return run
 
         self.globals.declare("length", ("builtin", length))
         self.globals.declare("absolute", ("builtin", absolute))
         self.globals.declare("floor", ("builtin", floor_of))
         self.globals.declare("at", ("builtin", at))
         self.globals.declare("piece", ("builtin", piece))
+        self.globals.declare("kind", ("builtin", kind))
+        self.globals.declare("text", ("builtin", as_text))
+        self.globals.declare("number", ("builtin", as_num))
+        self.globals.declare("min", ("builtin", extreme("MIN")))
+        self.globals.declare("max", ("builtin", extreme("MAX")))
 
     def run(self, program: Program) -> None:
         self.execute_block(program.body, self.globals)
@@ -620,6 +708,17 @@ class Interpreter:
             self.execute(stmt, env)
 
     def execute(self, stmt, env: Environment) -> None:
+        try:
+            self._execute(stmt, env)
+        except BetaError as err:
+            if self.stack and not err.stack:
+                err.stack = list(self.stack)
+                err.args = (str(err).split("\n")[0] + "\n" + "\n".join(
+                    f"  in hustle {name} on line {lineno}" for name, lineno in err.stack
+                ),)
+            raise
+
+    def _execute(self, stmt, env: Environment) -> None:
         if isinstance(stmt, Print):
             value = self.eval(stmt.expr, env)
             self.output(self._stringify(value) + "\n")
@@ -672,6 +771,8 @@ class Interpreter:
             return expr.value
         if isinstance(expr, Bool):
             return expr.value
+        if isinstance(expr, Seq):
+            return [self.eval(item, env) for item in expr.items]
         if isinstance(expr, Input):
             try:
                 raw = self.input_fn()
@@ -716,6 +817,12 @@ class Interpreter:
         line = expr.line
 
         if expr.op == "PLUS":
+            if isinstance(left, list) and isinstance(right, list):
+                return left + right
+            if isinstance(left, list):
+                return left + [right]
+            if isinstance(right, list):
+                return [left] + right
             if isinstance(left, str) or isinstance(right, str):
                 return self._stringify(left) + self._stringify(right)
             return tidy(as_number(left, line) + as_number(right, line))
@@ -782,12 +889,14 @@ class Interpreter:
         if self.func_depth >= self.CALL_LIMIT:
             raise BetaError(f"hustle nested past {self.CALL_LIMIT}. Cash out earlier", expr.line)
         self.func_depth += 1
+        self.stack.append((expr.name, expr.line))
         try:
             self.execute_block(body, local)
         except CashOut as cash:
             return cash.value
         finally:
             self.func_depth -= 1
+            self.stack.pop()
         return 0
 
     @staticmethod
@@ -798,6 +907,8 @@ class Interpreter:
             if value.is_integer():
                 return str(int(value))
             return f"{value:.10g}"
+        if isinstance(value, list):
+            return "[" + ", ".join(Interpreter._stringify(item) for item in value) + "]"
         return str(value)
 
 
@@ -852,24 +963,45 @@ def repl() -> None:
 
 
 def main(argv: list[str]) -> int:
-    if len(argv) > 2:
-        print("Usage: cobratate.py [program.cbt]", file=sys.stderr)
-        return 2
-    if len(argv) == 2:
-        path = argv[1]
+    args = argv[1:]
+    if not args:
+        repl()
+        return 0
+    if args[0] in {"-h", "--help"}:
+        print(f"Cobratate {VERSION}")
+        print("Usage: cobratate.py [program.cbt]")
+        print("       cobratate.py -c CODE")
+        print("       cobratate.py --version")
+        print("With no file, start the REPL.")
+        return 0
+    if args[0] in {"-V", "--version"}:
+        print(f"Cobratate {VERSION}")
+        return 0
+    if args[0] == "-c":
+        if len(args) != 2:
+            print("Usage: cobratate.py -c CODE", file=sys.stderr)
+            return 2
         try:
-            with open(path, encoding="utf-8") as handle:
-                source = handle.read()
-        except OSError as err:
-            print(f"Beta behavior detected: cannot open {path}: {err}", file=sys.stderr)
-            return 1
-        try:
-            execute_source(source)
+            execute_source(args[1])
         except BetaError as err:
             print(err, file=sys.stderr)
             return 1
         return 0
-    repl()
+    if len(args) != 1:
+        print("Usage: cobratate.py [program.cbt]", file=sys.stderr)
+        return 2
+    path = args[0]
+    try:
+        with open(path, encoding="utf-8") as handle:
+            source = handle.read()
+    except OSError as err:
+        print(f"Beta behavior detected: cannot open {path}: {err}", file=sys.stderr)
+        return 1
+    try:
+        execute_source(source)
+    except BetaError as err:
+        print(err, file=sys.stderr)
+        return 1
     return 0
 
 

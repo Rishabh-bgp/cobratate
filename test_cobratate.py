@@ -100,6 +100,19 @@ class CobratateTests(unittest.TestCase):
             run(source)
         self.assertIn("nested past", str(caught.exception))
 
+    def test_garage_and_kind(self):
+        source = '''
+        BUGATTI g EQUALS [2, 3, 5]
+        WHAT COLOR IS YOUR BUGATTI CALL at (g, MINUS 1)
+        WHAT COLOR IS YOUR BUGATTI g PLUS [7]
+        WHAT COLOR IS YOUR BUGATTI CALL kind WITH g
+        WHAT COLOR IS YOUR BUGATTI CALL max (2, 9, 4)
+        '''
+        self.assertEqual(run(source), "5\n[2, 3, 5, 7]\ngarage\n9\n")
+
+    def test_version_constant(self):
+        self.assertTrue(cobratate.VERSION)
+
     def test_input_number_and_text(self):
         source = '''
         BUGATTI a EQUALS ASK THE MATRIX
