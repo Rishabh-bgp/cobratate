@@ -12,7 +12,7 @@ WHAT COLOR IS YOUR BUGATTI "What color is your Bugatti?"
 BACK TO THE MATRIX
 ```
 
-The checked catalogue of every example is [docs/programs.md](docs/programs.md). Data-structure programs live in [examples/dsa](examples/dsa). Machine-learning programs live in [examples/ml](examples/ml).
+The checked catalogue of every example is [docs/programs.md](docs/programs.md). Data-structure programs live in [examples/dsa](examples/dsa). Machine-learning programs live in [examples/ml](examples/ml). The public site is [rishabh-bgp.github.io/cobratate](https://rishabh-bgp.github.io/cobratate/).
 
 ## How to use Cobratate on your computer
 
