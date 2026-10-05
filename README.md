@@ -12,7 +12,7 @@ WHAT COLOR IS YOUR BUGATTI "What color is your Bugatti?"
 BACK TO THE MATRIX
 ```
 
-The checked catalogue of every example is [docs/programs.md](docs/programs.md). Data-structure programs live in [examples/dsa](examples/dsa). Machine-learning programs live in [examples/ml](examples/ml). The public site is [rishabh-bgp.github.io/cobratate](https://rishabh-bgp.github.io/cobratate/).
+The checked catalogue of every example is [docs/programs.md](docs/programs.md). Data-structure programs live in [examples/dsa](examples/dsa). Machine-learning programs live in [examples/ml](examples/ml). The public site source is [`site/`](site/). After one setting — Settings, Pages, Build and deployment, Source: GitHub Actions — it is published at [rishabh-bgp.github.io/cobratate](https://rishabh-bgp.github.io/cobratate/). The workflow [`.github/workflows/pages.yml`](.github/workflows/pages.yml) deploys that folder on every push to `main`.
 
 ## How to use Cobratate on your computer
 
