@@ -1,0 +1,40 @@
+MATRIX: Univariate linear regression by gradient descent.
+MATRIX: Points are [x, y]. The line is weight TIMES x PLUS bias.
+
+ESCAPE THE MATRIX
+
+HUSTLE predict WITH x AND weight AND bias
+  CASH OUT weight TIMES x PLUS bias
+DONE HUSTLING
+
+HUSTLE fit WITH points AND rate AND epochs
+  BUGATTI weight EQUALS 0
+  BUGATTI bias EQUALS 0
+  BUGATTI n EQUALS CALL length WITH points
+  BUGATTI epoch EQUALS 0
+  GRIND WHILE epoch IS LESS THAN epochs
+    BUGATTI dw EQUALS 0
+    BUGATTI db EQUALS 0
+    BUGATTI i EQUALS 0
+    GRIND WHILE i IS LESS THAN n
+      BUGATTI point EQUALS CALL at (points, i)
+      BUGATTI x EQUALS CALL at (point, 0)
+      BUGATTI y EQUALS CALL at (point, 1)
+      BUGATTI error EQUALS CALL predict (x, weight, bias) MINUS y
+      BUGATTI dw EQUALS dw PLUS error TIMES x
+      BUGATTI db EQUALS db PLUS error
+      BUGATTI i EQUALS i PLUS 1
+    STOP GRINDING
+    BUGATTI weight EQUALS weight MINUS rate TIMES dw DIVIDED BY n
+    BUGATTI bias EQUALS bias MINUS rate TIMES db DIVIDED BY n
+    BUGATTI epoch EQUALS epoch PLUS 1
+  STOP GRINDING
+  CASH OUT [weight, bias]
+DONE HUSTLING
+
+BUGATTI points EQUALS [[1, 2], [2, 4], [3, 6], [4, 8]]
+BUGATTI line EQUALS CALL fit (points, 0.1, 200)
+WHAT COLOR IS YOUR BUGATTI line
+WHAT COLOR IS YOUR BUGATTI CALL predict (5, CALL at (line, 0), CALL at (line, 1))
+
+BACK TO THE MATRIX

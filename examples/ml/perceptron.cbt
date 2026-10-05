@@ -1,0 +1,48 @@
+MATRIX: A perceptron learning the AND gate. A positive score is SIGMA.
+
+ESCAPE THE MATRIX
+
+HUSTLE step WITH score
+  IF score IS GREATER THAN 0 THEN
+    CASH OUT 1
+  PERIOD
+  CASH OUT 0
+DONE HUSTLING
+
+HUSTLE score WITH x AND y AND w0 AND w1 AND bias
+  CASH OUT w0 TIMES x PLUS w1 TIMES y PLUS bias
+DONE HUSTLING
+
+HUSTLE train WITH rate AND epochs
+  BUGATTI w0 EQUALS 0
+  BUGATTI w1 EQUALS 0
+  BUGATTI bias EQUALS 0
+  BUGATTI inputs EQUALS [[0, 0], [0, 1], [1, 0], [1, 1]]
+  BUGATTI labels EQUALS [0, 0, 0, 1]
+  BUGATTI epoch EQUALS 0
+  GRIND WHILE epoch IS LESS THAN epochs
+    BUGATTI i EQUALS 0
+    GRIND WHILE i IS LESS THAN 4
+      BUGATTI row EQUALS CALL at (inputs, i)
+      BUGATTI x EQUALS CALL at (row, 0)
+      BUGATTI y EQUALS CALL at (row, 1)
+      BUGATTI guess EQUALS CALL step WITH CALL score (x, y, w0, w1, bias)
+      BUGATTI miss EQUALS CALL at (labels, i) MINUS guess
+      BUGATTI w0 EQUALS w0 PLUS rate TIMES miss TIMES x
+      BUGATTI w1 EQUALS w1 PLUS rate TIMES miss TIMES y
+      BUGATTI bias EQUALS bias PLUS rate TIMES miss
+      BUGATTI i EQUALS i PLUS 1
+    STOP GRINDING
+    BUGATTI epoch EQUALS epoch PLUS 1
+  STOP GRINDING
+  CASH OUT [w0, w1, bias]
+DONE HUSTLING
+
+BUGATTI model EQUALS CALL train (1, 12)
+WHAT COLOR IS YOUR BUGATTI model
+WHAT COLOR IS YOUR BUGATTI CALL step WITH CALL score (0, 0, CALL at (model, 0), CALL at (model, 1), CALL at (model, 2))
+WHAT COLOR IS YOUR BUGATTI CALL step WITH CALL score (0, 1, CALL at (model, 0), CALL at (model, 1), CALL at (model, 2))
+WHAT COLOR IS YOUR BUGATTI CALL step WITH CALL score (1, 0, CALL at (model, 0), CALL at (model, 1), CALL at (model, 2))
+WHAT COLOR IS YOUR BUGATTI CALL step WITH CALL score (1, 1, CALL at (model, 0), CALL at (model, 1), CALL at (model, 2))
+
+BACK TO THE MATRIX

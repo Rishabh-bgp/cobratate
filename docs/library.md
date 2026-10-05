@@ -32,6 +32,12 @@ One element of a garage, or one character of text. A negative index counts from 
 
 A slice of text or of a garage. Bounds follow Python: they are clamped, and a negative bound counts from the end. The result has the same kind as `target`.
 
+## put
+
+`CALL put (garage, index, value)`
+
+Returns a new garage with one index replaced. The original garage is not modified. A negative index counts from the end. An index outside the garage is an error. Text has no `put`; strings are not updated in place.
+
 ## kind
 
 `CALL kind WITH value`

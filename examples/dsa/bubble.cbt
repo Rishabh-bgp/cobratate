@@ -1,0 +1,31 @@
+MATRIX: Bubble sort. PUT returns a new garage with one index replaced.
+
+ESCAPE THE MATRIX
+
+HUSTLE swap WITH row AND i AND j
+  BUGATTI left EQUALS CALL at (row, i)
+  BUGATTI right EQUALS CALL at (row, j)
+  BUGATTI row EQUALS CALL put (row, i, right)
+  CASH OUT CALL put (row, j, left)
+DONE HUSTLING
+
+HUSTLE bubble WITH row
+  BUGATTI n EQUALS CALL length WITH row
+  BUGATTI i EQUALS 0
+  GRIND WHILE i IS LESS THAN n
+    BUGATTI j EQUALS 0
+    GRIND WHILE j IS LESS THAN n MINUS i MINUS 1
+      IF CALL at (row, j) IS GREATER THAN CALL at (row, j PLUS 1) THEN
+        BUGATTI row EQUALS CALL swap (row, j, j PLUS 1)
+      PERIOD
+      BUGATTI j EQUALS j PLUS 1
+    STOP GRINDING
+    BUGATTI i EQUALS i PLUS 1
+  STOP GRINDING
+  CASH OUT row
+DONE HUSTLING
+
+WHAT COLOR IS YOUR BUGATTI CALL bubble WITH [5, 1, 4, 2, 8, 0]
+WHAT COLOR IS YOUR BUGATTI CALL bubble WITH [3, 3, 1]
+
+BACK TO THE MATRIX

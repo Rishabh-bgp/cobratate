@@ -1,0 +1,50 @@
+MATRIX: Breadth-first search on an adjacency garage. Node k lists its neighbours.
+MATRIX: Queue and visited are garages. Order is the visitation garage.
+
+ESCAPE THE MATRIX
+
+HUSTLE enqueue WITH queue AND value
+  CASH OUT queue PLUS [value]
+DONE HUSTLING
+
+HUSTLE dequeue WITH queue
+  CASH OUT CALL piece (queue, 1, CALL length WITH queue)
+DONE HUSTLING
+
+HUSTLE mark WITH seen AND index
+  CASH OUT CALL put (seen, index, 1)
+DONE HUSTLING
+
+HUSTLE bfs WITH graph AND start
+  BUGATTI n EQUALS CALL length WITH graph
+  BUGATTI seen EQUALS []
+  BUGATTI k EQUALS 0
+  GRIND WHILE k IS LESS THAN n
+    BUGATTI seen EQUALS seen PLUS [0]
+    BUGATTI k EQUALS k PLUS 1
+  STOP GRINDING
+  BUGATTI seen EQUALS CALL mark (seen, start)
+  BUGATTI queue EQUALS [start]
+  BUGATTI order EQUALS []
+  GRIND WHILE CALL length (queue) IS GREATER THAN 0
+    BUGATTI node EQUALS CALL at (queue, 0)
+    BUGATTI queue EQUALS CALL dequeue WITH queue
+    BUGATTI order EQUALS order PLUS [node]
+    BUGATTI neighbours EQUALS CALL at (graph, node)
+    BUGATTI i EQUALS 0
+    GRIND WHILE i IS LESS THAN CALL length (neighbours)
+      BUGATTI next EQUALS CALL at (neighbours, i)
+      IF CALL at (seen, next) IS THE SAME AS 0 THEN
+        BUGATTI seen EQUALS CALL mark (seen, next)
+        BUGATTI queue EQUALS CALL enqueue (queue, next)
+      PERIOD
+      BUGATTI i EQUALS i PLUS 1
+    STOP GRINDING
+  STOP GRINDING
+  CASH OUT order
+DONE HUSTLING
+
+BUGATTI graph EQUALS [[1, 2], [3], [3], []]
+WHAT COLOR IS YOUR BUGATTI CALL bfs (graph, 0)
+
+BACK TO THE MATRIX

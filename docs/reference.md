@@ -1,6 +1,6 @@
 # Language reference
 
-This reference describes Cobratate 1.1 as implemented by `cobratate.py`. A construct not listed here is a syntax error. When this page and the interpreter disagree, the interpreter is the specification and this page should be corrected.
+This reference describes Cobratate 1.2 as implemented by `cobratate.py`. A construct not listed here is a syntax error. When this page and the interpreter disagree, the interpreter is the specification and this page should be corrected.
 
 ## Lexical structure
 
@@ -175,7 +175,7 @@ The argument count must match the parameter count. Calling a non-hustle is an er
 []
 ```
 
-A trailing comma is permitted. `CALL at WITH garage AND index` returns the element. A negative index counts from the end. An index outside the garage is an error. `CALL piece WITH garage AND start AND end` returns a garage, using Python's slice bounds: a start past the end is empty, and a negative bound counts from the end.
+A trailing comma is permitted. `CALL at WITH garage AND index` returns the element. A negative index counts from the end. An index outside the garage is an error. `CALL piece WITH garage AND start AND end` returns a garage, using Python's slice bounds: a start past the end is empty, and a negative bound counts from the end. `CALL put (garage, index, value)` returns a new garage with that index replaced. It does not modify the garage that was passed in.
 
 ### Input
 

@@ -12,7 +12,7 @@ import sys
 from dataclasses import dataclass
 from typing import Any, Callable
 
-VERSION = "1.1.0"
+VERSION = "1.2.0"
 
 
 # ---------------------------------------------------------------------------
@@ -642,6 +642,20 @@ class Interpreter:
             end = int(as_number(args[2], line))
             return target[start:end]
 
+        def put(args, line):
+            if len(args) != 3:
+                raise BetaError("PUT expects a garage, an index, and a value", line)
+            if not isinstance(args[0], list):
+                raise BetaError("PUT expects a garage", line)
+            target = list(args[0])
+            index = int(as_number(args[1], line))
+            if index < 0:
+                index += len(target)
+            if index < 0 or index >= len(target):
+                raise BetaError(f"index {args[1]!r} is outside a garage of length {len(target)}", line)
+            target[index] = args[2]
+            return target
+
         def kind(args, line):
             if len(args) != 1:
                 raise BetaError("KIND expects one argument", line)
@@ -694,6 +708,7 @@ class Interpreter:
         self.globals.declare("floor", ("builtin", floor_of))
         self.globals.declare("at", ("builtin", at))
         self.globals.declare("piece", ("builtin", piece))
+        self.globals.declare("put", ("builtin", put))
         self.globals.declare("kind", ("builtin", kind))
         self.globals.declare("text", ("builtin", as_text))
         self.globals.declare("number", ("builtin", as_num))

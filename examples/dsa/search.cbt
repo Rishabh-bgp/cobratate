@@ -1,0 +1,37 @@
+MATRIX: Linear scan and binary search on a sorted garage.
+
+ESCAPE THE MATRIX
+
+HUSTLE linear WITH row AND target
+  BUGATTI i EQUALS 0
+  BUGATTI n EQUALS CALL length WITH row
+  GRIND WHILE i IS LESS THAN n
+    IF CALL at (row, i) IS THE SAME AS target THEN
+      CASH OUT i
+    PERIOD
+    BUGATTI i EQUALS i PLUS 1
+  STOP GRINDING
+  CASH OUT MINUS 1
+DONE HUSTLING
+
+HUSTLE binary WITH row AND target AND lo AND hi
+  IF lo IS GREATER THAN hi THEN
+    CASH OUT MINUS 1
+  PERIOD
+  BUGATTI mid EQUALS CALL floor WITH (lo PLUS hi) DIVIDED BY 2
+  BUGATTI here EQUALS CALL at (row, mid)
+  IF here IS THE SAME AS target THEN
+    CASH OUT mid
+  PERIOD
+  IF here IS GREATER THAN target THEN
+    CASH OUT CALL binary (row, target, lo, mid MINUS 1)
+  PERIOD
+  CASH OUT CALL binary (row, target, mid PLUS 1, hi)
+DONE HUSTLING
+
+BUGATTI row EQUALS [1, 3, 4, 7, 9, 12, 15]
+WHAT COLOR IS YOUR BUGATTI CALL linear (row, 9)
+WHAT COLOR IS YOUR BUGATTI CALL binary (row, 9, 0, 6)
+WHAT COLOR IS YOUR BUGATTI CALL binary (row, 8, 0, 6)
+
+BACK TO THE MATRIX

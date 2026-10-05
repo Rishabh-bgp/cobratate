@@ -5,7 +5,7 @@ This tutorial assumes no prior Cobratate. It assumes an ordinary programming voc
 Save a program as `hello.cbt` and run it:
 
 ```
-python cobratate.py hello.cbt
+python cobratate.py examples/intro/hello.cbt
 ```
 
 With no file, the same interpreter starts a read-eval-print loop. The prompt is `topg>`. `:quit` leaves it. A snippet can also be run without a file:

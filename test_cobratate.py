@@ -110,7 +110,17 @@ class CobratateTests(unittest.TestCase):
         '''
         self.assertEqual(run(source), "5\n[2, 3, 5, 7]\ngarage\n9\n")
 
+    def test_put_returns_a_new_garage(self):
+        source = '''
+        BUGATTI row EQUALS [1, 2, 3]
+        WHAT COLOR IS YOUR BUGATTI CALL put (row, 1, 9)
+        WHAT COLOR IS YOUR BUGATTI row
+        '''
+        self.assertEqual(run(source), "[1, 9, 3]\n[1, 2, 3]\n")
+
     def test_version_constant(self):
+        self.assertEqual(cobratate.VERSION, "1.2.0")
+
         self.assertTrue(cobratate.VERSION)
 
     def test_input_number_and_text(self):

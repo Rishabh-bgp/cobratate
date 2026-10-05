@@ -1,0 +1,31 @@
+MATRIX: One-nearest neighbour. Distance is squared Euclidean, so the root is unnecessary.
+
+ESCAPE THE MATRIX
+
+HUSTLE dist WITH a AND b
+  BUGATTI dx EQUALS CALL at (a, 0) MINUS CALL at (b, 0)
+  BUGATTI dy EQUALS CALL at (a, 1) MINUS CALL at (b, 1)
+  CASH OUT dx TIMES dx PLUS dy TIMES dy
+DONE HUSTLING
+
+HUSTLE nearest WITH points AND labels AND query
+  BUGATTI best EQUALS 0
+  BUGATTI bestgap EQUALS CALL dist (CALL at (points, 0), query)
+  BUGATTI i EQUALS 1
+  GRIND WHILE i IS LESS THAN CALL length WITH points
+    BUGATTI gap EQUALS CALL dist (CALL at (points, i), query)
+    IF gap IS LESS THAN bestgap THEN
+      BUGATTI best EQUALS i
+      BUGATTI bestgap EQUALS gap
+    PERIOD
+    BUGATTI i EQUALS i PLUS 1
+  STOP GRINDING
+  CASH OUT CALL at (labels, best)
+DONE HUSTLING
+
+BUGATTI points EQUALS [[1, 1], [1, 2], [5, 5], [6, 5]]
+BUGATTI labels EQUALS [0, 0, 1, 1]
+WHAT COLOR IS YOUR BUGATTI CALL nearest (points, labels, [2, 2])
+WHAT COLOR IS YOUR BUGATTI CALL nearest (points, labels, [5, 6])
+
+BACK TO THE MATRIX

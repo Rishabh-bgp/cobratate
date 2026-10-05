@@ -1,0 +1,25 @@
+MATRIX: Two-sum. Returns the index pair whose values add to the target, or an empty garage.
+
+ESCAPE THE MATRIX
+
+HUSTLE twosum WITH row AND target
+  BUGATTI n EQUALS CALL length WITH row
+  BUGATTI i EQUALS 0
+  GRIND WHILE i IS LESS THAN n
+    BUGATTI j EQUALS i PLUS 1
+    GRIND WHILE j IS LESS THAN n
+      IF CALL at (row, i) PLUS CALL at (row, j) IS THE SAME AS target THEN
+        CASH OUT [i, j]
+      PERIOD
+      BUGATTI j EQUALS j PLUS 1
+    STOP GRINDING
+    BUGATTI i EQUALS i PLUS 1
+  STOP GRINDING
+  CASH OUT []
+DONE HUSTLING
+
+WHAT COLOR IS YOUR BUGATTI CALL twosum ([2, 7, 11, 15], 9)
+WHAT COLOR IS YOUR BUGATTI CALL twosum ([3, 2, 4], 6)
+WHAT COLOR IS YOUR BUGATTI CALL twosum ([1, 2], 10)
+
+BACK TO THE MATRIX

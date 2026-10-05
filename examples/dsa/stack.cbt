@@ -1,0 +1,30 @@
+MATRIX: A stack is a garage. Push concatenates. Pop drops the last element.
+
+ESCAPE THE MATRIX
+
+HUSTLE push WITH stack AND value
+  CASH OUT stack PLUS [value]
+DONE HUSTLING
+
+HUSTLE top WITH stack
+  CASH OUT CALL at (stack, MINUS 1)
+DONE HUSTLING
+
+HUSTLE pop WITH stack
+  BUGATTI n EQUALS CALL length WITH stack
+  IF n IS THE SAME AS 0 THEN
+    CASH OUT []
+  PERIOD
+  CASH OUT CALL piece (stack, 0, n MINUS 1)
+DONE HUSTLING
+
+BUGATTI stack EQUALS []
+BUGATTI stack EQUALS CALL push (stack, 10)
+BUGATTI stack EQUALS CALL push (stack, 20)
+BUGATTI stack EQUALS CALL push (stack, 30)
+WHAT COLOR IS YOUR BUGATTI stack
+WHAT COLOR IS YOUR BUGATTI CALL top WITH stack
+BUGATTI stack EQUALS CALL pop WITH stack
+WHAT COLOR IS YOUR BUGATTI stack
+
+BACK TO THE MATRIX
