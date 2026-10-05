@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Cobratate — escape the Matrix</title>
-  <meta name="description" content="Cobratate is an esoteric imperative language. The jokes are in the tokens. The rules are ordinary.">
+  <meta name="description" content="Cobratate, an esoteric imperative language by Er. Rishabh Aryan. Ordinary programs, data structures, and small learning models.">
   <link rel="icon" href="mark.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,62 +12,85 @@
   <style>
     :root {
       --ink: #090909;
-      --panel: #121212;
-      --line: rgba(212, 175, 95, 0.35);
+      --panel: rgba(18, 18, 18, 0.92);
+      --line: rgba(212, 175, 95, 0.38);
       --gold: #e0c27a;
       --gold-2: #9a7433;
       --paper: #f4efe4;
       --mute: #a39886;
-      --danger: #c4493a;
+      --code: #8dbe8a;
+      --glow: rgba(224, 194, 122, 0.16);
+      --wash: rgba(196, 73, 58, 0.08);
+    }
+    html[data-theme="light"] {
+      --ink: #f7f1e6;
+      --panel: rgba(255, 252, 246, 0.92);
+      --line: rgba(122, 84, 28, 0.28);
+      --gold: #8a5a12;
+      --gold-2: #6d4710;
+      --paper: #1c160f;
+      --mute: #6d6254;
+      --code: #1f6b3a;
+      --glow: rgba(196, 146, 58, 0.18);
+      --wash: rgba(196, 73, 58, 0.06);
     }
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
     body {
       margin: 0;
       background:
-        radial-gradient(900px 480px at 80% -10%, rgba(224, 194, 122, 0.16), transparent 60%),
-        radial-gradient(700px 500px at -10% 20%, rgba(196, 73, 58, 0.08), transparent 55%),
+        radial-gradient(900px 480px at 80% -10%, var(--glow), transparent 60%),
+        radial-gradient(700px 500px at -10% 20%, var(--wash), transparent 55%),
         var(--ink);
       color: var(--paper);
       font-family: Outfit, sans-serif;
       font-weight: 360;
-      line-height: 1.5;
+      line-height: 1.55;
     }
     a { color: var(--gold); text-decoration: none; }
     a:hover { text-decoration: underline; }
     nav {
       position: sticky; top: 0; z-index: 4;
       display: flex; justify-content: space-between; align-items: center;
-      padding: 16px 7vw;
-      background: rgba(9, 9, 9, 0.82);
+      padding: 14px 7vw;
+      background: color-mix(in srgb, var(--ink) 84%, transparent);
       border-bottom: 1px solid var(--line);
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(12px);
     }
     nav strong { letter-spacing: 0.22em; font-size: 13px; }
-    nav div { display: flex; gap: 22px; font-size: 14px; }
+    nav .links { display: flex; gap: 20px; align-items: center; font-size: 14px; }
+    button.mode {
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--paper);
+      border-radius: 999px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font: inherit;
+    }
     header {
       display: grid;
       grid-template-columns: 1.15fr 0.85fr;
       gap: 48px;
       align-items: center;
-      padding: 72px 7vw 40px;
+      padding: 68px 7vw 28px;
     }
     .eyebrow {
       color: var(--gold);
       letter-spacing: 0.28em;
       text-transform: uppercase;
       font-size: 12px;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
     h1 {
       font-family: "Instrument Serif", serif;
       font-weight: 400;
-      font-size: clamp(64px, 9vw, 120px);
+      font-size: clamp(64px, 9vw, 118px);
       line-height: 0.86;
       margin: 0 0 18px;
     }
     h1 em { font-style: italic; color: var(--gold); }
-    .lede { max-width: 620px; font-size: 20px; color: #ddd4c4; }
+    .lede { max-width: 640px; font-size: 20px; }
     .actions { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
     .btn {
       border: 1px solid var(--gold);
@@ -77,34 +100,34 @@
       border-radius: 999px;
       font-weight: 650;
     }
+    html[data-theme="light"] .btn { color: #fffaf2; }
     .btn.ghost { background: transparent; color: var(--gold); }
     .mark {
       justify-self: end;
       width: min(420px, 100%);
       border-radius: 28px;
       border: 1px solid var(--line);
-      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.28);
     }
-    section { padding: 28px 7vw 10px; }
+    section { padding: 26px 7vw 8px; }
     h2 {
       font-family: "Instrument Serif", serif;
-      font-size: 42px;
+      font-size: 44px;
       font-weight: 400;
       margin: 0 0 8px;
     }
-    .sub { color: var(--mute); max-width: 680px; }
-    .terminal {
-      margin-top: 22px;
-      background: #070707;
+    .sub { color: var(--mute); max-width: 720px; }
+    .terminal, .creator, article, .card {
+      background: var(--panel);
       border: 1px solid var(--line);
       border-radius: 18px;
-      overflow: hidden;
     }
+    .terminal { margin-top: 22px; overflow: hidden; }
     .bar {
       display: flex; justify-content: space-between;
       padding: 10px 16px;
       color: var(--mute);
-      border-bottom: 1px solid rgba(224, 194, 122, 0.18);
+      border-bottom: 1px solid var(--line);
       font-family: "Geist Mono", monospace;
       font-size: 12px;
     }
@@ -117,21 +140,12 @@
       overflow-x: auto;
     }
     .kw { color: var(--gold); }
-    .str { color: #f0d7a2; }
-    .out { color: #8dbe8a; }
-    .grid, .cards {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-      margin-top: 22px;
-    }
+    .str { color: #c9a15b; }
+    .out { color: var(--code); }
+    .grid, .cards { display: grid; gap: 16px; margin-top: 22px; }
+    .grid { grid-template-columns: repeat(3, 1fr); }
     .cards { grid-template-columns: 1fr 1fr; }
-    article, .card {
-      background: rgba(18, 18, 18, 0.9);
-      border: 1px solid rgba(224, 194, 122, 0.18);
-      border-radius: 18px;
-      padding: 20px;
-    }
+    article, .card { padding: 20px; }
     article span, .card span {
       color: var(--gold-2);
       letter-spacing: 0.16em;
@@ -140,53 +154,81 @@
     }
     article h3, .card h3 { margin: 8px 0; font-size: 22px; }
     ul { margin: 8px 0 0; padding-left: 18px; }
-    li { margin: 6px 0; }
+    li { margin: 7px 0; }
+    .creator {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 28px;
+      align-items: center;
+      padding: 24px;
+      margin-top: 18px;
+    }
+    .creator img { width: 160px; border-radius: 20px; border: 1px solid var(--line); }
     .syllabus {
-      margin: 36px 7vw;
+      margin: 34px 7vw;
       padding: 28px;
       border-radius: 22px;
-      background:
-        linear-gradient(135deg, rgba(224, 194, 122, 0.16), rgba(18, 18, 18, 0.4));
       border: 1px solid var(--line);
+      background: linear-gradient(135deg, var(--glow), transparent 55%);
     }
     footer {
       padding: 28px 7vw 48px;
       color: var(--mute);
       font-size: 14px;
-      border-top: 1px solid rgba(224, 194, 122, 0.15);
-      margin-top: 36px;
+      border-top: 1px solid var(--line);
+      margin-top: 28px;
     }
     @media (max-width: 860px) {
-      header, .grid, .cards { grid-template-columns: 1fr; }
-      nav div { display: none; }
-      .mark { justify-self: start; }
+      header, .grid, .cards, .creator { grid-template-columns: 1fr; }
+      nav .links a { display: none; }
+      .mark, .creator img { justify-self: start; width: min(280px, 100%); }
     }
   </style>
 </head>
 <body>
   <nav>
     <strong>COBRATATE</strong>
-    <div>
-      <a href="#run">Run</a>
-      <a href="#programs">Programs</a>
+    <div class="links">
+      <a href="#creator">Creator</a>
+      <a href="#showcase">Showcase</a>
       <a href="#syllabus">Syllabus</a>
       <a href="https://github.com/Rishabh-bgp/cobratate">Repository</a>
+      <button class="mode" type="button" id="mode" aria-label="Toggle color mode">Light</button>
     </div>
   </nav>
   <header>
     <div>
       <p class="eyebrow">Esoteric imperative language · version 1.2</p>
       <h1>What color<br>is your <em>Bugatti?</em></h1>
-      <p class="lede">The jokes are in the tokens. The rules are ordinary. Print, bind, loop, return, and leave the Matrix with a sort, a search, and a perceptron still in the garage.</p>
+      <p class="lede">A teaching language with a loud vocabulary and quiet rules. Ordinary programs, numerical work, data structures, and small learning models already run in the repository. Created by Er. Rishabh Aryan.</p>
       <div class="actions">
         <a class="btn" href="https://github.com/Rishabh-bgp/cobratate">Clone the repository</a>
-        <a class="btn ghost" href="https://github.com/Rishabh-bgp/cobratate/blob/main/docs/tutorial.md">Read the tutorial</a>
+        <a class="btn ghost" href="https://github.com/Rishabh-bgp/cobratate/blob/main/docs/programs.md">Open the catalogue</a>
       </div>
     </div>
     <img class="mark" src="mark.jpg" alt="Black cobra coiled through a gold monogram">
   </header>
+
+  <section id="creator">
+    <h2>The maker.</h2>
+    <p class="sub">Cobratate was written during a hackathon at the Indian Institute of Technology Jammu, in the course of an internship there. The phrases came first. The evaluator was fitted behind them the same night.</p>
+    <div class="creator">
+      <img src="mark.jpg" alt="">
+      <div>
+        <p class="eyebrow">Creator</p>
+        <h2 style="margin-top:0">Er. Rishabh Aryan</h2>
+        <p>M.Tech student in Artificial Intelligence and Data Science at the Indian Institute of Information Technology, Bhagalpur. The language, the interpreter, the manual, and the example programs in this repository are his.</p>
+        <p>
+          <a href="https://github.com/Rishabh-bgp">GitHub</a> ·
+          <a href="https://orcid.org/0009-0004-7595-9440">ORCID</a> ·
+          <a href="https://github.com/Rishabh-bgp/cobratate">Cobratate</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
   <section id="run">
-    <h2>Escape in four commands.</h2>
+    <h2>Four commands. Then you are in.</h2>
     <p class="sub">Python 3.10 or newer. No packages. On Windows use <code>py</code> if <code>python</code> is not recognised. On macOS or Linux, <code>python3</code> is the usual name.</p>
     <div class="terminal">
       <div class="bar"><span>topg@matrix</span><span>cobratate.py</span></div>
@@ -202,62 +244,87 @@ Top G
 <span class="kw">BACK TO THE MATRIX</span></pre>
     </div>
   </section>
-  <section>
-    <h2>One phrase. One meaning.</h2>
+
+  <section id="showcase">
+    <h2>What the language already writes.</h2>
+    <p class="sub">These are not proposals. Each file is in the repository and was run. The checked results are in the <a href="https://github.com/Rishabh-bgp/cobratate/blob/main/docs/programs.md">program catalogue</a>.</p>
     <div class="grid">
       <article>
-        <span>Output</span>
-        <h3>What color is your Bugatti</h3>
-        <p>Prints a value and a newline. The color was never the point.</p>
+        <span>Ordinary programs</span>
+        <h3>The first garage</h3>
+        <ul>
+          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/intro/hello.cbt">Hello</a> — print</li>
+          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/intro/grind.cbt">Grind</a> — a compounding loop</li>
+          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/intro/fizz.cbt">FizzBuzz</a> — COBRA, TATE, COBRATATE</li>
+          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/intro/hustle.cbt">Hustle</a> — functions and booleans</li>
+          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/intro/garage.cbt">Garage</a> — lists and indexing</li>
+        </ul>
       </article>
       <article>
-        <span>Loop</span>
-        <h3>Grind while</h3>
-        <p>A while-loop. <em>Escape the grind</em> leaves it. One million turns is the wall.</p>
+        <span>Numerical work</span>
+        <h3>Small software</h3>
+        <ul>
+          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/numbers/primes.cbt">Primes</a> below 50</li>
+          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/numbers/euclid.cbt">Euclid</a> — gcd 42, lcm 252</li>
+          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/numbers/fib.cbt">Fibonacci</a> by recursion</li>
+          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/numbers/binomial.cbt">Pascal's triangle</a></li>
+          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/numbers/collatz.cbt">Collatz</a> hailstones</li>
+          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/numbers/bases.cbt">Bases</a> — 42 is 101010</li>
+        </ul>
       </article>
       <article>
-        <span>Function</span>
-        <h3>Hustle, then cash out</h3>
-        <p>Define with <em>Hustle</em>. Return with <em>Cash out</em>. The call ends at the parenthesis.</p>
+        <span>One phrase</span>
+        <h3>One meaning</h3>
+        <p><em>What color is your Bugatti</em> prints. <em>Grind while</em> loops. <em>Hustle</em> defines a function. <em>Cash out</em> returns. A list is a garage. <em>Put</em> returns a new one.</p>
       </article>
     </div>
-  </section>
-  <section id="programs">
-    <h2>The garage, then the model.</h2>
-    <p class="sub">Every file is linked from the <a href="https://github.com/Rishabh-bgp/cobratate/blob/main/docs/programs.md">program catalogue</a>, with the result it was checked against.</p>
     <div class="cards">
       <div class="card">
         <span>examples/dsa</span>
         <h3>Data structures</h3>
         <ul>
-          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/dsa/bubble.cbt">Bubble sort</a></li>
-          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/dsa/search.cbt">Linear scan and binary search</a></li>
-          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/dsa/stack.cbt">Stack</a></li>
-          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/dsa/twosum.cbt">Two-sum</a></li>
-          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/dsa/bfs.cbt">Breadth-first search</a></li>
+          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/dsa/bubble.cbt">Bubble sort</a> — <code>[5, 1, 4, 2, 8, 0]</code> becomes sorted</li>
+          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/dsa/search.cbt">Linear scan and binary search</a> — 9 at index 4</li>
+          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/dsa/stack.cbt">Stack</a> — push, top, pop</li>
+          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/dsa/twosum.cbt">Two-sum</a> — indices <code>[0, 1]</code></li>
+          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/dsa/bfs.cbt">Breadth-first search</a> — visits <code>[0, 1, 2, 3]</code></li>
         </ul>
       </div>
       <div class="card">
         <span>examples/ml</span>
         <h3>Machine learning</h3>
         <ul>
-          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/ml/regression.cbt">Linear regression</a></li>
-          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/ml/perceptron.cbt">Perceptron on AND</a></li>
-          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/ml/knn.cbt">One-nearest neighbour</a></li>
-          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/ml/normalize.cbt">Min-max scaling</a></li>
+          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/ml/regression.cbt">Linear regression</a> — weight about 1.99 on y = 2x</li>
+          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/ml/perceptron.cbt">Perceptron</a> — AND classifies as 0 0 0 1</li>
+          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/ml/knn.cbt">One-nearest neighbour</a> — two query classes</li>
+          <li><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/examples/ml/normalize.cbt">Min-max scaling</a> — <code>[10, 20, 30]</code> to <code>[0, 0.5, 1]</code></li>
         </ul>
       </div>
     </div>
   </section>
+
   <div class="syllabus" id="syllabus">
     <p class="eyebrow">Universities, colleges, schools</p>
     <h2>Put it on the syllabus.</h2>
-    <p>The MIT License already permits a class to copy the interpreter and the manual. No separate permission is required. Use it as a one-week laboratory, not as a replacement for a production language. Tell the room that the persona is controversial, and that the allegations are recorded as allegations.</p>
-    <p><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/README.md#for-universities-colleges-and-schools">Read the six-week map</a></p>
+    <p>The MIT License already permits a class to copy the interpreter and the manual. No separate permission is required. Use it as a laboratory, not as a replacement for a production language. The six-week map runs from the greeting through lists, sorting, search, a graph, and the learning models above.</p>
+    <p><a href="https://github.com/Rishabh-bgp/cobratate/blob/main/README.md#for-universities-colleges-and-schools">Read the map</a></p>
   </div>
   <footer>
-    <p>Cobratate was written during a hackathon at the Indian Institute of Technology Jammu, in the course of an internship there. It is not affiliated with Andrew Tate.</p>
-    <p>Repository: <a href="https://github.com/Rishabh-bgp/cobratate">github.com/Rishabh-bgp/cobratate</a></p>
+    <p>Created by Er. Rishabh Aryan. Not affiliated with Andrew Tate. The persona supplies the tokens; the allegations are recorded as allegations in the manual.</p>
+    <p><a href="https://github.com/Rishabh-bgp/cobratate">github.com/Rishabh-bgp/cobratate</a></p>
   </footer>
+  <script>
+    const root = document.documentElement;
+    const button = document.getElementById("mode");
+    const stored = localStorage.getItem("cobratate-theme");
+    const preferred = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+    function apply(theme) {
+      root.dataset.theme = theme;
+      button.textContent = theme === "dark" ? "Light" : "Dark";
+      localStorage.setItem("cobratate-theme", theme);
+    }
+    apply(stored || preferred);
+    button.addEventListener("click", () => apply(root.dataset.theme === "dark" ? "light" : "dark"));
+  </script>
 </body>
 </html>
