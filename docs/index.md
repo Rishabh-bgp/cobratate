@@ -14,4 +14,4 @@ Cobratate is an esoteric programming language. The vocabulary is borrowed from t
 | [Inspiration](inspiration.md) | The public figure, the phrases that became keywords, and what was not borrowed |
 | [Glossary](glossary.md) | Terms used by the manual |
 
-The project origin, a hackathon during an internship at the Indian Institute of Technology Jammu, is recorded in [ORIGIN.md](../ORIGIN.md).
+Universities, colleges, and schools are welcome to use this manual in a syllabus. The terms are the [MIT License](../LICENSE), and the invitation is in the [README](../README.md#for-universities-colleges-and-schools).
