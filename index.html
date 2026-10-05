@@ -86,8 +86,10 @@
       display: inline-block; border: 1px solid var(--gold); background: var(--gold);
       color: #1a1408; padding: 11px 16px; border-radius: 999px; font-weight: 640; text-decoration: none;
     }
-    html[data-theme="light"] .btn { color: #fffaf2; }
     .btn.ghost { background: transparent; color: var(--gold); }
+    html[data-theme="light"] .btn { color: #fffaf2; background: #6a4710; border-color: #6a4710; }
+    html[data-theme="light"] .btn.ghost { color: #6a4710; background: transparent; border-color: #6a4710; }
+    html[data-theme="light"] .skip { color: #fffaf2; background: #6a4710; }
     .mark { width: 100%; border-radius: 24px; border: 1px solid var(--line); }
     .facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 28px 0; }
     .facts div, .panel, article, .card {
