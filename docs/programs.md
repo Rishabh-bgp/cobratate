@@ -20,22 +20,22 @@ How to install Python and clone the repository is in the [README](../README.md#h
 
 | Program | What it shows |
 | --- | --- |
-| `examples/intro/hello.cbt` | Print |
-| `examples/intro/grind.cbt` | Assignment and a loop |
-| `examples/intro/fizz.cbt` | FizzBuzz as COBRA / TATE / COBRATATE |
-| `examples/intro/hustle.cbt` | Functions, booleans, string repeat |
-| `examples/intro/garage.cbt` | Lists, indexing, kind, and number conversion |
+| [examples/intro/hello.cbt](../examples/intro/hello.cbt) | Print |
+| [examples/intro/grind.cbt](../examples/intro/grind.cbt) | Assignment and a loop |
+| [examples/intro/fizz.cbt](../examples/intro/fizz.cbt) | FizzBuzz as COBRA / TATE / COBRATATE |
+| [examples/intro/hustle.cbt](../examples/intro/hustle.cbt) | Functions, booleans, string repeat |
+| [examples/intro/garage.cbt](../examples/intro/garage.cbt) | Lists, indexing, kind, and number conversion |
 
 ## Numerical
 
 | Program | What it shows |
 | --- | --- |
-| `examples/numbers/primes.cbt` | Trial division |
-| `examples/numbers/euclid.cbt` | Greatest common divisor and least common multiple |
-| `examples/numbers/collatz.cbt` | Hailstone steps and peak |
-| `examples/numbers/fib.cbt` | Recursive Fibonacci |
-| `examples/numbers/binomial.cbt` | Pascal's triangle |
-| `examples/numbers/bases.cbt` | Integer bases |
+| [examples/numbers/primes.cbt](../examples/numbers/primes.cbt) | Trial division |
+| [examples/numbers/euclid.cbt](../examples/numbers/euclid.cbt) | Greatest common divisor and least common multiple |
+| [examples/numbers/collatz.cbt](../examples/numbers/collatz.cbt) | Hailstone steps and peak |
+| [examples/numbers/fib.cbt](../examples/numbers/fib.cbt) | Recursive Fibonacci |
+| [examples/numbers/binomial.cbt](../examples/numbers/binomial.cbt) | Pascal's triangle |
+| [examples/numbers/bases.cbt](../examples/numbers/bases.cbt) | Integer bases |
 
 ## Data structures and algorithms
 

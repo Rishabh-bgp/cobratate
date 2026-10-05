@@ -33,11 +33,14 @@ The interpreter does not try to recover and continue. A program either finishes 
 | Division or remainder by zero | division, split, or modulo by zero |
 | Negative string repeat | cannot be repeated a negative number of times |
 | Index outside text or a garage | index is outside a value of that length |
+| `PUT` applied to a non-garage, or to an index outside it | expected a garage, or the index is outside that length |
 | `NUMBER` applied to text that is not numeric | cannot read a number |
 
 ## Limits
 
 A grind past 1,000,000 turns reports the limit and the line of the `GRIND WHILE`. A hustle nested past 1,000 calls reports the limit and the call. These replace an unbounded hang and a raw recursion traceback.
+
+A program error exits with status 1. A wrong command line exits with status 2. A missing file is reported on the standard error stream. The forms are `cobratate.py FILE`, `cobratate.py -c CODE`, and `cobratate.py` for the read-eval-print loop.
 
 ## Input and files
 

@@ -103,7 +103,7 @@ WHAT COLOR IS YOUR BUGATTI CALL piece (primes, 1, 3)
 WHAT COLOR IS YOUR BUGATTI primes PLUS [11]
 ```
 
-`CALL at` indexes. A negative index counts from the end. `CALL piece` slices with the same start and end rules as Python. `PLUS` concatenates two garages. An index outside the garage is an error.
+`CALL at` indexes. A negative index counts from the end. `CALL piece` slices with the same start and end rules as Python. `PLUS` concatenates two garages. `CALL put (primes, 0, 11)` returns a new garage with one index replaced and does not modify `primes`. An index outside the garage is an error.
 
 ## Asking
 
@@ -114,4 +114,4 @@ BUGATTI answer EQUALS ASK THE MATRIX
 WHAT COLOR IS YOUR BUGATTI "heard " PLUS answer
 ```
 
-The next page is the [language reference](reference.md).
+The next page is the [language reference](reference.md). The checked programs are listed in the [catalogue](programs.md). Installation for a new machine is in the [README](../README.md#how-to-use-cobratate-on-your-computer).

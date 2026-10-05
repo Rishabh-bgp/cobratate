@@ -27,6 +27,9 @@ matrix
 period
 : The closer of an `IF`. Not a statement separator. Newlines separate statements.
 
+put
+: `CALL put (garage, index, value)` returns a new garage with one index replaced. It does not modify the garage that was passed in.
+
 sigma
 : The true boolean, written `SIGMA`. Also the property tested by conditions: non-zero, non-empty, or `SIGMA`.
 

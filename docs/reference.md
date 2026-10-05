@@ -1,6 +1,6 @@
 # Language reference
 
-This reference describes Cobratate 1.2 as implemented by `cobratate.py`. A construct not listed here is a syntax error. When this page and the interpreter disagree, the interpreter is the specification and this page should be corrected.
+This reference describes Cobratate 1.2 as implemented by `cobratate.py`. A construct not listed here is a syntax error. When this page and the interpreter disagree, the interpreter is the specification and this page should be corrected. The [tutorial](tutorial.md) is the first reading. The [program catalogue](programs.md) lists every checked example.
 
 ## Lexical structure
 

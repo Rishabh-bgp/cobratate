@@ -12,7 +12,7 @@ WHAT COLOR IS YOUR BUGATTI "What color is your Bugatti?"
 BACK TO THE MATRIX
 ```
 
-The checked catalogue of every example is [docs/programs.md](docs/programs.md). Data-structure programs live in [examples/dsa](examples/dsa). Machine-learning programs live in [examples/ml](examples/ml). The public site source is [`site/`](site/). After one setting — Settings, Pages, Build and deployment, Source: GitHub Actions — it is published at [rishabh-bgp.github.io/cobratate](https://rishabh-bgp.github.io/cobratate/). The workflow [`.github/workflows/pages.yml`](.github/workflows/pages.yml) deploys that folder on every push to `main`.
+The checked catalogue of every example is [docs/programs.md](docs/programs.md). Data-structure programs live in [examples/dsa](examples/dsa). Machine-learning programs live in [examples/ml](examples/ml). The public site is [rishabh-bgp.github.io/cobratate](https://rishabh-bgp.github.io/cobratate/). Its source is [`site/index.html`](site/index.html); [`index.html`](index.html) is the copy GitHub Pages serves from the repository root.
 
 ## How to use Cobratate on your computer
 
@@ -157,11 +157,13 @@ When the manual and `cobratate.py` disagree, the interpreter is the specificatio
 | Path | Role |
 | --- | --- |
 | `cobratate.py` | Interpreter and normative specification |
-| `docs/` | Tutorial, reference, library, catalogue, errors |
+| `docs/` | Tutorial, reference, library, catalogue, errors, glossary |
 | `examples/intro/` | First programs |
 | `examples/numbers/` | Numerical algorithms |
 | `examples/dsa/` | Sort, search, stack, graph traversal |
 | `examples/ml/` | Regression, perceptron, nearest neighbour, scaling |
+| `site/` | Source of the public site, including the emblem |
+| `index.html` | The page GitHub Pages serves |
 | `test_cobratate.py` | Regression tests for the interpreter |
 | `LICENSE` | MIT |
 

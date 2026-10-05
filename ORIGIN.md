@@ -6,4 +6,4 @@ The brief was to ship something runnable before the hall closed. The first draft
 
 The name was settled on the same night. Cobra was already the working title; Cobratate was the form that survived the whiteboard. The file extension `.cbt` and the program banners, `ESCAPE THE MATRIX` and `BACK TO THE MATRIX`, came from the same session. Sample programs written that night were the greeting, the compounding loop, and a FizzBuzz rewritten as `COBRA`, `TATE`, and `COBRATATE`. The numerical programs — primes, Euclid, Collatz, Pascal's triangle, and base conversion — were added after the hackathon so the repository would show more than slogans.
 
-No prize claim is attached to this account. The repository is the record of the language as it left that internship hackathon, plus the programs added to make the claim of a working language checkable.
+No prize is claimed for that session. The repository is the record of the language as it left that internship hackathon, plus the programs, the manual, and the public site added so the claim of a working language can be checked.
